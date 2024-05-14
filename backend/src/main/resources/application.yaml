@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: backend
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  sql:
+    init:
+      mode: always
+  config:
+    additional-location: classpath:/.env
+  jackson:
+    time-zone: America/Sao_Paulo
+
+server:
+  max-http-request-header-size: 2MB
+  port: ${PORT:8080}
+  ssl:
+    enabled: false
+allowed:
+  origins: "*"
+  methods: GET, POST, PUT, DELETE, OPTIONS
+
+environment: ${ENVIRONMENT:dev}
+
+logging:
+  pattern:
+    console: "%yellow([%d{yyyy-MM-dd HH:mm:ss}]) - %clr(%-5level) %cyan(%logger{40}) : %msg %n"
+  level:
+    org.springframework.web: info

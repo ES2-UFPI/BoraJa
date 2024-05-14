@@ -1,0 +1,30 @@
+# Dockerfile para o frontend
+FROM node:18-buster-slim
+
+ARG NODE_ENV=production
+ENV NODE_ENV $NODE_ENV
+
+ARG PORT=19006
+ENV PORT $PORT
+EXPOSE 19006 19001 19002
+ENV REACT_NATIVE_PACKAGER_HOSTNAME="10.0.0.114"
+
+ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
+ENV PATH /home/node/.npm-global/bin:$PATH
+RUN npm i --unsafe-perm -g npm@latest expo-cli@latest
+RUN apt-get update && apt-get install -y qemu-user-static
+
+RUN yarn add @expo/ngrok
+
+RUN mkdir /frontend/app/frontend && chown root:root /frontend/app/frontend
+WORKDIR /frontend/app/frontend
+ENV PATH /frontend/app/frontend/.bin:$PATH
+USER root
+COPY package.json package-lock.json./
+RUN yarn install
+
+WORKDIR /frontend/app/frontend
+
+COPY . /frontend/app/frontend/
+
+CMD ["npx","expo", "start"]

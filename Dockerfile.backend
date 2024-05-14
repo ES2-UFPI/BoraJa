@@ -1,8 +1,9 @@
-FROM openjdk:17-jdk-slim as builder
+# Dockerfile para o backend
+FROM openjdk:17-jdk-slim AS builder
 
 WORKDIR /build
 
-COPY . .
+COPY ./backend ./backend
 
 RUN ./mvnw package -DskipTests
 
@@ -17,9 +18,9 @@ USER spring:spring
 
 VOLUME /tmp
 
-WORKDIR /app
+WORKDIR /backend/app
 
-COPY --from=builder /build/app.jar /app/app.jar
+COPY --from=builder /build/app.jar /backend/app/app.jar
 
 CMD ["java", "-jar", "app.jar"]
 
