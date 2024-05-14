@@ -1,26 +1,22 @@
-# Dockerfile para o backend
-FROM openjdk:17-jdk-slim AS builder
+FROM maven:3.8.4-openjdk-17 AS builder
 
-WORKDIR /build
+WORKDIR /app
 
-COPY ./backend ./backend
+COPY ./backend/pom.xml .
 
-RUN ./mvnw package -DskipTests
+RUN mvn dependency:go-offline
 
-RUN mv target/*.jar app.jar
+COPY ./backend .
 
-FROM openjdk:17-jre-slim
+RUN mvn package -DskipTests
 
-ENV TZ=America/Fortaleza
+FROM openjdk:17-jdk-alpine
 
-RUN addgroup -S spring && adduser -S spring -G spring
-USER spring:spring
+RUN adduser -D myuser
+USER myuser
 
-VOLUME /tmp
+WORKDIR /app
 
-WORKDIR /backend/app
+COPY --from=builder /app/target/backend-0.0.1-SNAPSHOT.jar backend.jar
 
-COPY --from=builder /build/app.jar /backend/app/app.jar
-
-CMD ["java", "-jar", "app.jar"]
-
+ENTRYPOINT ["java", "-jar", "backend.jar"]
