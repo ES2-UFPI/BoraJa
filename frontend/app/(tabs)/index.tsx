@@ -1,70 +1,60 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { Text, View, StyleSheet } from 'react-native';
+import { Button } from 'react-native-elements';
 
 export default function HomeScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <View style={styles.container}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Início</Text>
+      </View>
+      <View style={styles.buttonContainer}>
+        <Button title="Buscar Viagem" onPress={() => console.log("Button 1 pressed")} buttonStyle={styles.buttonStyle1} />
+        <View style={styles.buttonSpacer} /> 
+        <Button title="Iniciar Viagem" onPress={() => console.log("Button 2 pressed")} buttonStyle={styles.buttonStyle2} />
+        <View style={styles.buttonSpacer} /> 
+        <Button title="Minhas Viagens" onPress={() => console.log("Button 3 pressed")} buttonStyle={styles.buttonStyle1} />
+        <View style={styles.buttonSpacer} /> 
+        <Button title="Meu Saldo" onPress={() => console.log("Button 4 pressed")} buttonStyle={styles.buttonStyle2} />
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  container: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
+    backgroundColor: 'white',
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  titleContainer: {
+    position: 'absolute', // Posiciona o título absolutamente
+    top: 0, // Fixa no topo
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 50, // Distância do topo
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  title: {
+    fontSize: 24, // Tamanho do título
+    fontWeight: 'bold', // Negrito
+    marginBottom: 20, // Espaçamento inferior
+  },
+  buttonContainer: {
+    width: '80%', // Define a largura do container de botões
+    justifyContent: 'center', // Centraliza verticalmente
+    marginTop: 100, // Espaçamento do topo para os botões
+  },
+  buttonStyle1: {
+    height: 50, // Define a altura dos botões
+    backgroundColor: 'black', // Cor de fundo dos botões
+    borderRadius: 30, // Borda arredondada
+  },
+  buttonStyle2: {
+    height: 50, // Define a altura dos botões
+    backgroundColor: '#F3AC3D', // Cor de fundo dos botões
+    borderRadius: 30, // Borda arredondada
+  },
+  buttonSpacer: {
+    height: 30, // Espaçamento entre os botões
   },
 });
