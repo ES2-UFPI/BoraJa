@@ -2,11 +2,11 @@ FROM maven:3.8.4-openjdk-17 AS builder
 
 WORKDIR /app
 
-COPY ./backend/pom.xml .
+COPY ./pom.xml .
 
 RUN mvn dependency:go-offline
 
-COPY ./backend .
+COPY . .
 
 RUN mvn package -DskipTests
 
