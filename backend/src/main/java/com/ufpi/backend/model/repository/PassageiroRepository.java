@@ -10,19 +10,19 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import com.ufpi.backend.model.entity.Pessoa;
-import com.ufpi.backend.model.filter.PessoaFiltroDTO;
+import com.ufpi.backend.model.entity.Passageiro;
+import com.ufpi.backend.model.filter.PassageiroFiltroDTO;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 
-public interface PessoaRepository extends JpaRepository<Pessoa, UUID>, JpaSpecificationExecutor<Pessoa> {
+public interface PassageiroRepository extends JpaRepository<Passageiro, UUID>, JpaSpecificationExecutor<Passageiro> {
 
-  public Pessoa findByCpf(String cpf);
+  public Passageiro findByCpf(String cpf);
 
-  public static Specification<Pessoa> especificar(PessoaFiltroDTO filter) {
-    Specification<Pessoa> spec = Specification.where(null);
+  public static Specification<Passageiro> especificar(PassageiroFiltroDTO filter) {
+    Specification<Passageiro> spec = Specification.where(null);
     spec = spec.and(distinct());
 
     if (isNotBlank(filter.getCpf())) {
@@ -35,7 +35,7 @@ public interface PessoaRepository extends JpaRepository<Pessoa, UUID>, JpaSpecif
     return spec;
   }
 
-  public static PageRequest paginar(PessoaFiltroDTO filter) {
+  public static PageRequest paginar(PassageiroFiltroDTO filter) {
     final String ORDER_PROPERTY = "nome";
     final Integer DEFAULT_PAGE = 0;
     final Integer DEFAULT_SIZE = 10;
@@ -47,19 +47,19 @@ public interface PessoaRepository extends JpaRepository<Pessoa, UUID>, JpaSpecif
     return PageRequest.of(filter.getPage(), filter.getSize(), Sort.by(Sort.Direction.ASC, ORDER_PROPERTY));
   }
 
-  public static Specification<Pessoa> distinct() {
-    return (Root<Pessoa> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
+  public static Specification<Passageiro> distinct() {
+    return (Root<Passageiro> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
       query.distinct(true);
       return null;
     };
   }
 
-  public static Specification<Pessoa> porCpf(String cpf) {
-    return (Root<Pessoa> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.equal(root.get("cpf"), cpf);
+  public static Specification<Passageiro> porCpf(String cpf) {
+    return (Root<Passageiro> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.equal(root.get("cpf"), cpf);
   }
 
-  public static Specification<Pessoa> porNome(String nome) {
-    return (Root<Pessoa> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.like(cb.upper(root.get("nome")),
+  public static Specification<Passageiro> porNome(String nome) {
+    return (Root<Passageiro> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.like(cb.upper(root.get("nome")),
         "%" + nome.toUpperCase() + "%");
   }
 }

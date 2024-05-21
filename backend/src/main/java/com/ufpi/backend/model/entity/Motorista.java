@@ -5,9 +5,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.br.CPF;
-
-import com.ufpi.backend.model.enums.TipoPessoa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,8 +22,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "pessoa")
-public class Pessoa implements Serializable {
+@Entity(name = "motorista")
+public class Motorista implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -32,7 +32,7 @@ public class Pessoa implements Serializable {
   @Column(unique = true)
   private UUID id;
 
-  @Column(columnDefinition = "text")
+  @Column(columnDefinition = "text", nullable = false)
   private String foto;
 
   @CPF
@@ -48,10 +48,12 @@ public class Pessoa implements Serializable {
   @Column(nullable = false)
   private LocalDate dataNascimento;
 
+  @CreationTimestamp
   @Column(nullable = false)
   private LocalDateTime dataCadastro;
 
-  @Column(nullable = false)
-  private TipoPessoa tipo;
+  @UpdateTimestamp
+  @Column(nullable = true)
+  private LocalDateTime dataAtualizacao;
 
 }

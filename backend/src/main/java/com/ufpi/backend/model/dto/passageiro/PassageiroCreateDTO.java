@@ -1,20 +1,22 @@
-package com.ufpi.backend.model.dto;
+package com.ufpi.backend.model.dto.passageiro;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import com.ufpi.backend.annotation.ValidCPF;
-import com.ufpi.backend.model.entity.Pessoa;
-import com.ufpi.backend.model.enums.TipoPessoa;
+import com.ufpi.backend.model.entity.Passageiro;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PessoaCreateDTO implements Serializable {
+@Builder
+public class PassageiroCreateDTO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -27,19 +29,16 @@ public class PessoaCreateDTO implements Serializable {
   @NotBlank(message = "propriedade nome não pode ser nula ou string vazia.")
   private String nome;
 
+  @Past(message = "Data de nascimento deve estar no passado!")
   @NotBlank(message = "propriedade data de nascimento não pode ser nula ou string vazia.")
   private LocalDate dataNascimento;
 
-  @NotBlank(message = "propriedade tipo do usuário não pode ser nula ou string vazia.")
-  private TipoPessoa tipo;
-
-  public static Pessoa toEntity(PessoaCreateDTO userDTO) {
-    return Pessoa.builder()
+  public static Passageiro toEntity(PassageiroCreateDTO userDTO) {
+    return Passageiro.builder()
         .foto(userDTO.getFoto() == null ? "" : userDTO.getFoto())
         .cpf(userDTO.getCpf())
         .nome(userDTO.getNome())
         .dataNascimento(userDTO.getDataNascimento())
-        .tipo(userDTO.getTipo())
         .build();
   }
 

@@ -1,12 +1,12 @@
 package com.ufpi.backend.model.enums;
 
-public enum TipoPessoa {
-  MOTORISTA("Motorista"),
-  PASSAGEIRO("Passageiro");
+public enum TipoVeiculo {
+  CARRO("Carro"),
+  MOTO("Moto");
 
   private String descricao;
 
-  private TipoPessoa(String descricao) {
+  private TipoVeiculo(String descricao) {
     this.descricao = descricao;
   }
 
