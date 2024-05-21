@@ -7,8 +7,7 @@ import java.util.UUID;
 
 import org.hibernate.validator.constraints.br.CPF;
 
-import com.ufpi.backend.model.enums.UserType;
-
+import com.ufpi.backend.model.enums.TipoPessoa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "pessoa")
-public class User implements Serializable {
+public class Pessoa implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -44,12 +43,15 @@ public class User implements Serializable {
   private String nome;
 
   @Column(nullable = false)
+  private String email;
+
+  @Column(nullable = false)
   private LocalDate dataNascimento;
 
   @Column(nullable = false)
   private LocalDateTime dataCadastro;
 
   @Column(nullable = false)
-  private UserType tipo;
+  private TipoPessoa tipo;
 
 }

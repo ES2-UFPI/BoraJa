@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.ufpi.backend.annotation.ValidCPF;
-import com.ufpi.backend.model.entity.User;
-import com.ufpi.backend.model.enums.UserType;
+import com.ufpi.backend.model.entity.Pessoa;
+import com.ufpi.backend.model.enums.TipoPessoa;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO implements Serializable {
+public class PessoaDTO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -39,28 +39,28 @@ public class UserDTO implements Serializable {
 
   private LocalDateTime dataCadastro;
 
-  private UserType tipo;
+  private TipoPessoa tipo;
 
-  public static User toEntity(UserDTO userDTO) {
-    return User.builder()
-        .foto(userDTO.getFoto() == null ? "" : userDTO.getFoto())
-        .cpf(userDTO.getCpf())
-        .nome(userDTO.getNome())
-        .dataNascimento(userDTO.getDataNascimento())
-        .dataCadastro(userDTO.getDataCadastro() == null ? LocalDateTime.now() : userDTO.getDataCadastro())
-        .tipo(userDTO.getTipo())
+  public static Pessoa toEntity(PessoaDTO pessoaDTO) {
+    return Pessoa.builder()
+        .foto(pessoaDTO.getFoto() == null ? "" : pessoaDTO.getFoto())
+        .cpf(pessoaDTO.getCpf())
+        .nome(pessoaDTO.getNome())
+        .dataNascimento(pessoaDTO.getDataNascimento())
+        .dataCadastro(pessoaDTO.getDataCadastro() == null ? LocalDateTime.now() : pessoaDTO.getDataCadastro())
+        .tipo(pessoaDTO.getTipo())
         .build();
   }
 
   /*  */
-  public static UserDTO fromEntity(User user) {
-    return UserDTO.builder()
-        .id(user.getId())
-        .foto(user.getFoto() == null ? "" : user.getFoto())
-        .cpf(user.getCpf())
-        .nome(user.getNome())
-        .dataNascimento(user.getDataNascimento())
-        .tipo(user.getTipo())
+  public static PessoaDTO fromEntity(Pessoa pessoa) {
+    return PessoaDTO.builder()
+        .id(pessoa.getId())
+        .foto(pessoa.getFoto() == null ? "" : pessoa.getFoto())
+        .cpf(pessoa.getCpf())
+        .nome(pessoa.getNome())
+        .dataNascimento(pessoa.getDataNascimento())
+        .tipo(pessoa.getTipo())
         .build();
   }
 

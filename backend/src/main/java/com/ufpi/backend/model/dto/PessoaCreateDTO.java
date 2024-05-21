@@ -3,8 +3,8 @@ package com.ufpi.backend.model.dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 import com.ufpi.backend.annotation.ValidCPF;
-import com.ufpi.backend.model.entity.User;
-import com.ufpi.backend.model.enums.UserType;
+import com.ufpi.backend.model.entity.Pessoa;
+import com.ufpi.backend.model.enums.TipoPessoa;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserCreateDTO implements Serializable {
+public class PessoaCreateDTO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -31,10 +31,10 @@ public class UserCreateDTO implements Serializable {
   private LocalDate dataNascimento;
 
   @NotBlank(message = "propriedade tipo do usuário não pode ser nula ou string vazia.")
-  private UserType tipo;
+  private TipoPessoa tipo;
 
-  public static User toEntity(UserCreateDTO userDTO) {
-    return User.builder()
+  public static Pessoa toEntity(PessoaCreateDTO userDTO) {
+    return Pessoa.builder()
         .foto(userDTO.getFoto() == null ? "" : userDTO.getFoto())
         .cpf(userDTO.getCpf())
         .nome(userDTO.getNome())

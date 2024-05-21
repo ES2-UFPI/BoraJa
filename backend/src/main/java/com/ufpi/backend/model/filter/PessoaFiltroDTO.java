@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserFilterDTO {
+public class PessoaFiltroDTO {
   String cpf;
   String nome;
   private Integer page;
