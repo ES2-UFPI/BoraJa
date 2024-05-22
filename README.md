@@ -39,10 +39,12 @@ Uma vez iniciado suba também o container do backend
 docker compose backend up
 ```
 
-Por fim, abra uma nova aba do terminal e suba o container do frontend
+Por fim, abra uma nova aba do terminal e suba o app frontend
 
 ```
-docker compose frontend up
+cd ./frontend/
+npm install
+npm start
 ```
 
 Uma vez em execução algo similar a isso deve aparecer, escaneie o QR Code, instale o App do Expo no seu celular e o aplicativo deverá iniciar normalmente.
@@ -98,7 +100,10 @@ Ferramentas usadas
 
 ## ✒️ Autores
 
-- **Um desenvolvedor** - _Trabalho Inicial_ - [Fernandoblima1](https://github.com/fernandoblima1)
-- **Fulano De Tal** - _Documentação_ - [fulanodetal](https://github.com/linkParaPerfil)
+- _Backend_ - [Fernandoblima1](https://github.com/fernandoblima1)
+- _Documentação_ - [Fernandoblima1](https://github.com/fernandoblima1)
+- _Frontend_ - [FlavioAquino](https://github.com/flavioaquino)
+- _Frontend_ - [HeitorAm](https://github.com/heitor-am)
+- _Frontend_ - [AntonioGeraldo](https://github.com/geraldojr1)
 
 ---
