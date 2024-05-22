@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.ufpi.backend.exceptions.NotFoundError;
 import com.ufpi.backend.model.dto.passageiro.PassageiroCreateDTO;
 import com.ufpi.backend.model.dto.passageiro.PassageiroDTO;
-import com.ufpi.backend.model.dto.passageiro.PassageiroUpdateDTO;
 import com.ufpi.backend.model.entity.Passageiro;
 import com.ufpi.backend.model.filter.PassageiroFiltroDTO;
 import com.ufpi.backend.model.repository.PassageiroRepository;
@@ -51,23 +50,17 @@ public class PassageiroService {
     return passageiroRepository.save(passageiroTemp);
   }
 
-  public Passageiro atualizar(UUID id, PassageiroUpdateDTO passageiroDTO) {
-    PassageiroDTO passageiroExistente = consultarPorId(id);
-
-    Passageiro passageiroUpdate = PassageiroUpdateDTO.mapPassageiroUpdate(passageiroExistente,
-        passageiroDTO);
-    passageiroUpdate.setDataAtualizacao(LocalDateTime.now());
-
-    return passageiroRepository.save(passageiroUpdate);
+  public Passageiro atualizar(UUID id, Passageiro passageiro) {
+    passageiro.setDataAtualizacao(LocalDateTime.now());
+    return passageiroRepository.save(passageiro);
   }
 
   public PassageiroDTO consultarPassageiroPeloCPF(String cpf) {
-    Passageiro passageiro = passageiroRepository.findByCpf(cpf);
-    return PassageiroDTO.fromEntity(passageiro);
+    var passageiro = passageiroRepository.findByCpf(cpf);
+    return passageiro.map(PassageiroDTO::fromEntity).orElse(null);
   }
 
   public Page<Passageiro> consultar(Pageable paginacao) {
-    log.info("recuperando registros com paginacao... {}", paginacao);
     return passageiroRepository.findAll(paginacao);
   }
 

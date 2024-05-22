@@ -6,6 +6,7 @@ import com.ufpi.backend.model.entity.Veiculo;
 import com.ufpi.backend.model.enums.TipoVeiculo;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,10 +35,10 @@ public class VeiculoCreateDTO implements Serializable {
   @NotBlank(message = "propriedade cor não pode ser nula ou string vazia.")
   private String cor;
 
-  @NotBlank(message = "propriedade ano não pode ser nula ou string vazia.")
+  @NotNull(message = "propriedade ano não pode ser nula ou string vazia.")
   private Integer ano;
 
-  @NotBlank(message = "propriedade tipo não pode ser nula ou string vazia.")
+  @NotNull(message = "propriedade tipo não pode ser nula ou string vazia.")
   private TipoVeiculo tipo;
 
   @NotBlank(message = "propriedade cpf do proprietário não pode ser nula ou string vazia.")
@@ -54,5 +55,4 @@ public class VeiculoCreateDTO implements Serializable {
         .tipo(veiculoCreateDTO.getTipo())
         .build();
   }
-
 }

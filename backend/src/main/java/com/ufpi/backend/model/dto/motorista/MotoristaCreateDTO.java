@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import com.ufpi.backend.annotation.ValidCPF;
 import com.ufpi.backend.model.entity.Motorista;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,8 +23,8 @@ public class MotoristaCreateDTO implements Serializable {
   @NotBlank(message = "propriedade foto não pode ser nula ou string vazia.")
   private String foto;
 
-  @NotBlank(message = "propriedade cpf não pode ser nula ou string vazia.")
   @ValidCPF
+  @NotBlank(message = "propriedade cpf não pode ser nula ou string vazia.")
   private String cpf;
 
   @NotBlank(message = "propriedade nome não pode ser nula ou string vazia.")
@@ -33,7 +34,7 @@ public class MotoristaCreateDTO implements Serializable {
   private String email;
 
   @Past(message = "Data de nascimento deve estar no passado!")
-  @NotBlank(message = "propriedade data de nascimento não pode ser nula ou string vazia.")
+  @NotNull(message = "propriedade data de nascimento não pode ser nula ou string vazia.")
   private LocalDate dataNascimento;
 
   public static Motorista toEntity(MotoristaCreateDTO userDTO) {

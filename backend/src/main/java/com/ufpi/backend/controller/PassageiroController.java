@@ -1,6 +1,7 @@
 package com.ufpi.backend.controller;
 
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -12,29 +13,73 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ufpi.backend.config.response.ResponseModel;
+import com.ufpi.backend.exceptions.InvalidDataError;
 import com.ufpi.backend.model.dto.passageiro.PassageiroCreateDTO;
 import com.ufpi.backend.model.dto.passageiro.PassageiroDTO;
+import com.ufpi.backend.model.dto.passageiro.PassageiroUpdateDTO;
+import com.ufpi.backend.model.entity.Passageiro;
 import com.ufpi.backend.service.PassageiroService;
+import com.ufpi.backend.validator.CpfValidator;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/passageiro")
+@Tag(name = "Passageiro")
 @CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
 public class PassageiroController {
 
   private final PassageiroService passageiroService;
+  private final String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
 
   @PostMapping
-  public ResponseEntity<ResponseModel<PassageiroDTO>> cadastrar(PassageiroCreateDTO passageiroCreateDTO) {
-    var passageiro = passageiroService.insert(passageiroCreateDTO);
+  public ResponseEntity<ResponseModel<PassageiroDTO>> cadastrar(
+      @Valid @RequestBody PassageiroCreateDTO passageiroCreateDTO) {
     ResponseModel<PassageiroDTO> resposta = new ResponseModel<>();
+    if (!CpfValidator.isCpf(passageiroCreateDTO.getCpf())) {
+      throw new InvalidDataError("cpf", "CPF inválido!");
+    }
+    if (!Pattern.compile(emailRegex).matcher(passageiroCreateDTO.getEmail()).find()) {
+      throw new InvalidDataError("email", "Email inválido!");
+    }
+    if (passageiroService.consultarPassageiroPeloCPF(passageiroCreateDTO.getCpf()) != null) {
+      resposta.setMessage("Já existe um passageiro cadastrado com o cpf informado!");
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resposta);
+    }
+
+    Passageiro passageiro = passageiroService.insert(passageiroCreateDTO);
     resposta.setData(PassageiroDTO.fromEntity(passageiro));
     return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<ResponseModel<Passageiro>> atualizar(@PathVariable UUID id,
+      @Valid @RequestBody PassageiroUpdateDTO passageiroUpdateDTO) {
+    ResponseModel<Passageiro> resposta = new ResponseModel<>();
+    if (passageiroUpdateDTO.getEmail() != null || !passageiroUpdateDTO.getEmail().isEmpty()) {
+      if (!Pattern.compile(emailRegex).matcher(passageiroUpdateDTO.getEmail()).find()) {
+        throw new InvalidDataError("email", "Email inválido!");
+      }
+    }
+    Passageiro passageiroUpdate = PassageiroUpdateDTO.mapPassageiroUpdate(passageiroService.consultarPorId(id),
+        passageiroUpdateDTO);
+    if (passageiroUpdate == null) {
+      resposta.setMessage("O passageiro com ID informado não existe!");
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resposta);
+    }
+
+    resposta.setData(passageiroService.atualizar(id, passageiroUpdate));
+    resposta.setMessage("Operação realizada com sucesso!");
+    return ResponseEntity.status(HttpStatus.OK).body(resposta);
   }
 
   @GetMapping

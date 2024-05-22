@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import com.ufpi.backend.exceptions.NotFoundError;
 import com.ufpi.backend.model.dto.veiculo.VeiculoCreateDTO;
 import com.ufpi.backend.model.dto.veiculo.VeiculoDTO;
-import com.ufpi.backend.model.dto.veiculo.VeiculoUpdateDTO;
 import com.ufpi.backend.model.entity.Motorista;
 import com.ufpi.backend.model.entity.Veiculo;
 import com.ufpi.backend.model.repository.VeiculoRepository;
@@ -41,17 +40,13 @@ public class VeiculoService {
   public Veiculo insert(VeiculoCreateDTO veiculoCreateDTO, Motorista motorista) {
     Veiculo veiculoTemp = VeiculoCreateDTO.toEntity(veiculoCreateDTO);
     veiculoTemp.setAtivo(true);
-
+    veiculoTemp.setPlaca(veiculoCreateDTO.getPlaca().toUpperCase());
     veiculoTemp.setProprietario(motorista);
     veiculoTemp.setDataCadastro(LocalDateTime.now());
     return veiculoRepository.save(veiculoTemp);
   }
 
-  public Veiculo atualizar(String placa, VeiculoUpdateDTO veiculoUpdateDTO) {
-    VeiculoDTO veiculoExistente = consultarPorPlaca(placa);
-
-    Veiculo veiculoUpdate = VeiculoUpdateDTO.mapVeiculoUpdate(veiculoExistente,
-        veiculoUpdateDTO);
+  public Veiculo atualizar(String placa, Veiculo veiculoUpdate) {
     veiculoUpdate.setDataAtualizacao(LocalDateTime.now());
 
     return veiculoRepository.save(veiculoUpdate);
@@ -67,6 +62,23 @@ public class VeiculoService {
     }
 
     return VeiculoDTO.fromEntity(resultado.get());
+  }
+
+  public List<Veiculo> findByProprietarioCpf(String cpf) {
+    var result = veiculoRepository.findByProprietarioCpf(cpf);
+
+    if (!result.isEmpty()) {
+      var message = String.format("Entidade 'Veiculo' nao encontrada pelo cpf: %s",
+          cpf);
+      log.warn(message);
+      throw new NotFoundError(message);
+    }
+
+    return result;
+  }
+
+  public Boolean existeByCpfProprietario(String cpfProprietario) {
+    return veiculoRepository.existsByProprietarioCpf(cpfProprietario);
   }
 
   public void excluir(String placa) {

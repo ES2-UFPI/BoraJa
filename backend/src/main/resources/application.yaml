@@ -25,6 +25,9 @@ server:
   port: ${PORT:8080}
   ssl:
     enabled: false
+  error:
+    include-stacktrace: never
+
 allowed:
   origins: "*"
   methods: GET, POST, PUT, DELETE, OPTIONS

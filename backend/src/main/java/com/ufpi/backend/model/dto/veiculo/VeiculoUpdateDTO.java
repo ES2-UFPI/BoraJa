@@ -1,10 +1,10 @@
 package com.ufpi.backend.model.dto.veiculo;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
-import com.ufpi.backend.model.entity.Veiculo;
 
-import jakarta.validation.constraints.NotNull;
+import com.ufpi.backend.model.entity.Veiculo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,10 +17,11 @@ import lombok.NoArgsConstructor;
 public class VeiculoUpdateDTO implements Serializable {
   private static final long serialVersionUID = 1L;
 
-  @NotNull
-  private String placa;
-
   private String foto;
+
+  private String cor;
+
+  private Boolean ativo;
 
   public static VeiculoUpdateDTO fromEntity(VeiculoDTO veiculoDTO) {
     if (Objects.isNull(veiculoDTO)) {
@@ -28,14 +29,9 @@ public class VeiculoUpdateDTO implements Serializable {
     }
 
     return VeiculoUpdateDTO.builder()
-        .placa(veiculoDTO.getPlaca())
-        .build();
-  }
-
-  public Veiculo toEntity() {
-    return Veiculo.builder()
-        .placa(placa)
-        .foto(foto)
+        .foto(veiculoDTO.getFoto())
+        .cor(veiculoDTO.getCor())
+        .ativo(veiculoDTO.getAtivo())
         .build();
   }
 
@@ -44,6 +40,15 @@ public class VeiculoUpdateDTO implements Serializable {
     return Veiculo.builder()
         .placa(veiculoExistente.getPlaca())
         .foto(veiculoUpdate.getFoto())
+        .marca(veiculoExistente.getMarca())
+        .modelo(veiculoExistente.getModelo())
+        .cor(veiculoUpdate.getCor())
+        .ano(veiculoExistente.getAno())
+        .tipo(veiculoExistente.getTipo())
+        .proprietario(veiculoExistente.getProprietario())
+        .ativo(veiculoUpdate.getAtivo())
+        .dataCadastro(veiculoExistente.getDataCadastro())
+        .dataAtualizacao(LocalDateTime.now())
         .build();
   }
 }
