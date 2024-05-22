@@ -2,11 +2,9 @@ package com.ufpi.backend.model.dto.veiculo;
 
 import java.io.Serializable;
 
-import com.ufpi.backend.model.entity.Motorista;
 import com.ufpi.backend.model.entity.Veiculo;
 import com.ufpi.backend.model.enums.TipoVeiculo;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

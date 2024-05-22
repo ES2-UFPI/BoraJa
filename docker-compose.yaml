@@ -8,19 +8,7 @@ services:
       - ./backend:/backend
     environment:
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
-
-  frontend: 
-      container_name: frontend
-      build: ./frontend/
-      ports:
-         - 19000:19000 
-         - 19001:19001
-         - 19002:19002
-      volumes:
-         - ./frontend/:/usr/app # Link host directory to container
-         - nodemodules:/usr/app/node_modules
-      env_file: .env
-
+      
   database:
       image: postgres:latest
       restart: always
