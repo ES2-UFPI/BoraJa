@@ -30,13 +30,28 @@ Docker Compose version v2.24.5-desktop.1
 Inicialize os containers do Banco de Dados
 
 ```
-docker compose database up -d
+docker compose up -d database
+```
+
+Após isso faça o dump do banco local
+
+```
+ docker exec -i boraja-database-1 pg_restore -U user_boraja -d boraja < boraja-dump.sql
+```
+
+Resposta esperada:
+
+```
+pg_restore: error: could not execute query: ERROR:  schema "public" already exists
+Command was: CREATE SCHEMA public;
+
+pg_restore: warning: errors ignored on restore: 1
 ```
 
 Uma vez iniciado suba também o container do backend
 
 ```
-docker compose backend up
+docker compose up backend
 ```
 
 Por fim, abra uma nova aba do terminal e suba o app frontend

@@ -3,12 +3,8 @@ package com.ufpi.backend.model.dto.passageiro;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
-import java.util.UUID;
-
-import com.ufpi.backend.annotation.ValidCPF;
 import com.ufpi.backend.model.entity.Passageiro;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,13 +18,9 @@ import lombok.NoArgsConstructor;
 public class PassageiroUpdateDTO implements Serializable {
   private static final long serialVersionUID = 1L;
 
-  @NotNull
-  private UUID id;
-
   private String nome;
 
-  @ValidCPF
-  private String cpf;
+  private String email;
 
   private String foto;
 
@@ -41,9 +33,8 @@ public class PassageiroUpdateDTO implements Serializable {
     }
 
     return PassageiroUpdateDTO.builder()
-        .id(passageiro.getId())
         .nome(passageiro.getNome())
-        .cpf(passageiro.getCpf())
+        .email(passageiro.getEmail())
         .foto(passageiro.getFoto())
         .dataNascimento(passageiro.getDataNascimento())
         .build();
@@ -51,10 +42,9 @@ public class PassageiroUpdateDTO implements Serializable {
 
   public Passageiro toEntity() {
     return Passageiro.builder()
-        .id(id)
+        .email(email)
         .nome(nome)
         .foto(foto)
-        .cpf(cpf)
         .dataNascimento(dataNascimento)
         .build();
   }
@@ -66,6 +56,7 @@ public class PassageiroUpdateDTO implements Serializable {
         .foto(passageiroUpdate.getFoto())
         .nome(passageiroUpdate.getNome() == null ? passageiroExistente.getNome() : passageiroUpdate.getNome())
         .cpf(passageiroExistente.getCpf())
+        .email(passageiroUpdate.getEmail() == null ? passageiroExistente.getEmail() : passageiroUpdate.getEmail())
         .dataNascimento(passageiroUpdate.getDataNascimento())
         .dataCadastro(passageiroExistente.getDataCadastro())
         .build();

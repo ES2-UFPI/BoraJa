@@ -33,18 +33,24 @@ public class PassageiroDTO implements Serializable {
   @NotBlank(message = "propriedade nome não pode ser nula ou string vazia.")
   private String nome;
 
+  private String email;
+
   @NotBlank(message = "propriedade data de nascimento não pode ser nula ou string vazia.")
   private LocalDate dataNascimento;
 
   private LocalDateTime dataCadastro;
+
+  private LocalDateTime dataAtualizacao;
 
   public static Passageiro toEntity(PassageiroDTO passageiroDTO) {
     return Passageiro.builder()
         .foto(passageiroDTO.getFoto() == null ? "" : passageiroDTO.getFoto())
         .cpf(passageiroDTO.getCpf())
         .nome(passageiroDTO.getNome())
+        .email(passageiroDTO.getEmail())
         .dataNascimento(passageiroDTO.getDataNascimento())
         .dataCadastro(passageiroDTO.getDataCadastro() == null ? LocalDateTime.now() : passageiroDTO.getDataCadastro())
+        .dataAtualizacao(passageiroDTO.getDataAtualizacao())
         .build();
   }
 
@@ -55,7 +61,10 @@ public class PassageiroDTO implements Serializable {
         .foto(passageiro.getFoto() == null ? "" : passageiro.getFoto())
         .cpf(passageiro.getCpf())
         .nome(passageiro.getNome())
+        .email(passageiro.getEmail())
         .dataNascimento(passageiro.getDataNascimento())
+        .dataCadastro(passageiro.getDataCadastro())
+        .dataAtualizacao(passageiro.getDataAtualizacao())
         .build();
   }
 

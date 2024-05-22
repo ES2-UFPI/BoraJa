@@ -2,6 +2,7 @@ package com.ufpi.backend.model.repository;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
 import com.ufpi.backend.model.entity.Motorista;
 import com.ufpi.backend.model.filter.MotoristaFiltroDTO;
@@ -18,7 +20,8 @@ import jakarta.persistence.criteria.Root;
 
 public interface MotoristaRepository extends JpaRepository<Motorista, UUID>, JpaSpecificationExecutor<Motorista> {
 
-  public Motorista findByCpf(String cpf);
+  @Query(value = "select * from motorista where cpf = :cpf", nativeQuery = true)
+  public Optional<Motorista> findByCpf(String cpf);
 
   public static Specification<Motorista> especificar(MotoristaFiltroDTO filter) {
     Specification<Motorista> spec = Specification.where(null);

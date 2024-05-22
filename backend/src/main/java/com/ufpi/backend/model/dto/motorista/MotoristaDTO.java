@@ -37,7 +37,11 @@ public class MotoristaDTO implements Serializable {
   @NotBlank(message = "propriedade data de nascimento não pode ser nula ou string vazia.")
   private LocalDate dataNascimento;
 
+  private String email;
+
   private LocalDateTime dataCadastro;
+
+  private LocalDateTime dataAtualizacao;
 
   public static Passageiro toEntity(MotoristaDTO motoristaDTO) {
     return Passageiro.builder()
@@ -57,6 +61,9 @@ public class MotoristaDTO implements Serializable {
         .cpf(motorista.getCpf())
         .nome(motorista.getNome())
         .dataNascimento(motorista.getDataNascimento())
+        .email(motorista.getEmail())
+        .dataCadastro(motorista.getDataCadastro())
+        .dataAtualizacao(motorista.getDataAtualizacao())
         .build();
   }
 

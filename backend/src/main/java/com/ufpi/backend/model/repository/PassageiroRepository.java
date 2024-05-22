@@ -2,6 +2,7 @@ package com.ufpi.backend.model.repository;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +20,7 @@ import jakarta.persistence.criteria.Root;
 
 public interface PassageiroRepository extends JpaRepository<Passageiro, UUID>, JpaSpecificationExecutor<Passageiro> {
 
-  public Passageiro findByCpf(String cpf);
+  public Optional<Passageiro> findByCpf(String cpf);
 
   public static Specification<Passageiro> especificar(PassageiroFiltroDTO filter) {
     Specification<Passageiro> spec = Specification.where(null);
