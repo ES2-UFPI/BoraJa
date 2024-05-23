@@ -91,6 +91,21 @@ public class MotoristaController {
     return ResponseEntity.status(HttpStatus.OK).body(resposta);
   }
 
+  @PutMapping("/avaliar/{id}")
+  public ResponseEntity<ResponseModel<Motorista>> avaliar(@PathVariable UUID id, @RequestBody Float nota) {
+    ResponseModel<Motorista> resposta = new ResponseModel<>();
+    MotoristaDTO motoristaExistente = motoristaService.consultarPorId(id);
+    if (motoristaExistente == null) {
+      throw new NotFoundError("Motorista não encontrado!");
+    }
+    if (nota < 0 || nota > 5) {
+      throw new InvalidDataError("nota", "Nota inválida!");
+    }
+    resposta.setData(motoristaService.avaliar(id, nota));
+    resposta.setMessage("Operação realizada com sucesso!");
+    return ResponseEntity.status(HttpStatus.OK).body(resposta);
+  }
+
   @GetMapping
   public ResponseEntity<ResponseModel<MotoristaDTO>> consultaPaginada(
       @PageableDefault(size = 10, sort = { "dataCadastro" }, direction = Sort.Direction.DESC) Pageable paginacao) {
