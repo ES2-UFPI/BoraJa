@@ -46,9 +46,8 @@ public class VeiculoService {
     return veiculoRepository.save(veiculoTemp);
   }
 
-  public Veiculo atualizar(String placa, Veiculo veiculoUpdate) {
+  public Veiculo atualizar(Veiculo veiculoUpdate) {
     veiculoUpdate.setDataAtualizacao(LocalDateTime.now());
-
     return veiculoRepository.save(veiculoUpdate);
   }
 

@@ -54,6 +54,14 @@ public class MotoristaService {
     return motoristaRepository.save(motorista);
   }
 
+  public Motorista avaliar(UUID id, Float nota) {
+    Motorista motorista = findById(id);
+    motorista.setAvaliacao(calcularMedia(motorista.getCorridasAvaliadas(), nota, motorista.getAvaliacao()));
+    motorista.incrementarCorridasAvaliadas();
+    motorista.setDataAtualizacao(LocalDateTime.now());
+    return motoristaRepository.save(motorista);
+  }
+
   public MotoristaDTO consultarMotoristaPeloCPF(String cpf) {
     Optional<Motorista> motorista = motoristaRepository.findByCpf(cpf);
     return motorista.map(MotoristaDTO::fromEntity).orElse(null);
@@ -83,4 +91,9 @@ public class MotoristaService {
     return motoristaRepository.findByCpf(cpfProprietario).orElse(null);
   }
 
+  public Float calcularMedia(Integer totalAvaliacoes, Float nota, Float notaAtual) {
+    Float somaNotas = notaAtual * totalAvaliacoes;
+
+    return (somaNotas + nota) / totalAvaliacoes + 1;
+  }
 }

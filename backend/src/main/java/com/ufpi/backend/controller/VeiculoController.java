@@ -1,6 +1,5 @@
 package com.ufpi.backend.controller;
 
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.springframework.http.HttpStatus;
@@ -17,12 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ufpi.backend.config.response.ResponseModel;
 import com.ufpi.backend.exceptions.InvalidDataError;
-import com.ufpi.backend.model.dto.passageiro.PassageiroUpdateDTO;
 import com.ufpi.backend.model.dto.veiculo.VeiculoCreateDTO;
 import com.ufpi.backend.model.dto.veiculo.VeiculoDTO;
 import com.ufpi.backend.model.dto.veiculo.VeiculoUpdateDTO;
 import com.ufpi.backend.model.entity.Motorista;
-import com.ufpi.backend.model.entity.Passageiro;
 import com.ufpi.backend.model.entity.Veiculo;
 import com.ufpi.backend.service.MotoristaService;
 import com.ufpi.backend.service.VeiculoService;
@@ -82,8 +79,9 @@ public class VeiculoController {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resposta);
     }
 
-    resposta.setData(veiculoService.atualizar(placa, veiculoUpdate));
+    resposta.setData(veiculoService.atualizar(veiculoUpdate));
     resposta.setMessage("Operação realizada com sucesso!");
+
     return ResponseEntity.status(HttpStatus.OK).body(resposta);
   }
 

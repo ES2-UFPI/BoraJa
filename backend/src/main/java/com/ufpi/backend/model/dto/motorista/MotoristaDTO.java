@@ -7,8 +7,6 @@ import java.util.UUID;
 
 import com.ufpi.backend.annotation.ValidCPF;
 import com.ufpi.backend.model.entity.Motorista;
-import com.ufpi.backend.model.entity.Passageiro;
-
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,13 +41,22 @@ public class MotoristaDTO implements Serializable {
 
   private LocalDateTime dataAtualizacao;
 
-  public static Passageiro toEntity(MotoristaDTO motoristaDTO) {
-    return Passageiro.builder()
+  private Float avaliacao;
+
+  private Integer corridasAvaliadas;
+
+  private Integer corridasTotais;
+
+  public static Motorista toEntity(MotoristaDTO motoristaDTO) {
+    return Motorista.builder()
         .foto(motoristaDTO.getFoto() == null ? "" : motoristaDTO.getFoto())
         .cpf(motoristaDTO.getCpf())
         .nome(motoristaDTO.getNome())
         .dataNascimento(motoristaDTO.getDataNascimento())
         .dataCadastro(motoristaDTO.getDataCadastro() == null ? LocalDateTime.now() : motoristaDTO.getDataCadastro())
+        .avaliacao(motoristaDTO.getAvaliacao() == null ? 0 : motoristaDTO.getAvaliacao())
+        .corridasAvaliadas(motoristaDTO.getCorridasAvaliadas() == null ? 0 : motoristaDTO.getCorridasAvaliadas())
+        .corridasTotais(motoristaDTO.getCorridasTotais() == null ? 0 : motoristaDTO.getCorridasTotais())
         .build();
   }
 
@@ -64,6 +71,7 @@ public class MotoristaDTO implements Serializable {
         .email(motorista.getEmail())
         .dataCadastro(motorista.getDataCadastro())
         .dataAtualizacao(motorista.getDataAtualizacao())
+        .avaliacao(motorista.getAvaliacao())
         .build();
   }
 

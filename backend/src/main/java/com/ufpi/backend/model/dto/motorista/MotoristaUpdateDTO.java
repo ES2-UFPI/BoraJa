@@ -35,6 +35,7 @@ public class MotoristaUpdateDTO implements Serializable {
         .nome(motorista.getNome())
         .foto(motorista.getFoto())
         .dataNascimento(motorista.getDataNascimento())
+        .email(motorista.getEmail())
         .build();
   }
 
@@ -43,6 +44,7 @@ public class MotoristaUpdateDTO implements Serializable {
         .nome(nome)
         .foto(foto)
         .dataNascimento(dataNascimento)
+        .email(email)
         .build();
   }
 

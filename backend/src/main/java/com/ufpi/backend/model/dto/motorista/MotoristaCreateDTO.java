@@ -44,6 +44,7 @@ public class MotoristaCreateDTO implements Serializable {
         .nome(userDTO.getNome())
         .email(userDTO.getEmail())
         .dataNascimento(userDTO.getDataNascimento())
+        .avaliacao(0f)
         .build();
   }
 
