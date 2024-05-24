@@ -3,6 +3,8 @@ package com.ufpi.backend.model.dto.viagem;
 import java.io.Serializable;
 import java.util.UUID;
 
+import com.ufpi.backend.model.dto.localidade.LocalidadeCreateDTO;
+import com.ufpi.backend.model.dto.localidade.LocalidadeDTO;
 import com.ufpi.backend.model.entity.Localidade;
 import com.ufpi.backend.model.entity.Motorista;
 import com.ufpi.backend.model.entity.Passageiro;
@@ -34,18 +36,18 @@ public class ViagemCreateDTO implements Serializable {
   private String veiculoPlaca;
 
   @NotNull(message = "propriedade origem não pode ser nula.")
-  private Localidade origem;
+  private LocalidadeCreateDTO origem;
 
   @NotNull(message = "propriedade destino não pode ser nula.")
-  private Localidade destino;
+  private LocalidadeCreateDTO destino;
 
   public static Viagem toEntity(ViagemCreateDTO viagemDTO) {
     return Viagem.builder()
         .motorista(Motorista.builder().id(viagemDTO.getMotoristaId()).build())
         .passageiro(Passageiro.builder().id(viagemDTO.getPassageiroId()).build())
         .veiculo(Veiculo.builder().placa(viagemDTO.getVeiculoPlaca()).build())
-        .destino(viagemDTO.getDestino())
-        .origem(viagemDTO.getOrigem())
+        .destino(LocalidadeCreateDTO.toEntity(viagemDTO.getDestino()))
+        .origem(LocalidadeCreateDTO.toEntity(viagemDTO.getOrigem()))
         .build();
   }
 }

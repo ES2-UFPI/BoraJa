@@ -45,10 +45,12 @@ public class Viagem implements Serializable {
   @JoinColumn(name = "veiculo_placa", nullable = false)
   private Veiculo veiculo;
 
-  @Column(nullable = false)
+  @OneToOne
+  @JoinColumn(name = "origem_id", nullable = false)
   private Localidade origem;
 
-  @Column(nullable = false)
+  @OneToOne
+  @JoinColumn(name = "destino_id", nullable = false)
   private Localidade destino;
 
   @Column(nullable = true)
