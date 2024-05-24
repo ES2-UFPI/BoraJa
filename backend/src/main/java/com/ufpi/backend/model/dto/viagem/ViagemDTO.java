@@ -29,9 +29,6 @@ public class ViagemDTO implements Serializable {
   @NotNull(message = "propriedade motorista não pode ser nula.")
   private Motorista motorista;
 
-  @NotNull(message = "propriedade passageiro não pode ser nula.")
-  private Passageiro passageiro;
-
   @NotNull(message = "propriedade veiculo não pode ser nula.")
   private Veiculo veiculo;
 
@@ -41,9 +38,15 @@ public class ViagemDTO implements Serializable {
   @NotNull(message = "propriedade destino não pode ser nula.")
   private Localidade destino;
 
-  private LocalDateTime horaEmbarque;
+  @NotNull(message = "propriedade previsão de saída não pode ser nula.")
+  private LocalDateTime previsaoSaida;
 
-  private LocalDateTime horaDesembarque;
+  @NotNull(message = "propriedade previsão de chegada não pode ser nula.")
+  private LocalDateTime previsaoChegada;
+
+  private LocalDateTime horaSaida;
+
+  private LocalDateTime horaChegada;
 
   private Boolean finalizada;
 
@@ -55,11 +58,12 @@ public class ViagemDTO implements Serializable {
     return Viagem.builder()
         .id(viagemDTO.getId())
         .motorista(viagemDTO.getMotorista())
-        .passageiro(viagemDTO.getPassageiro())
         .origem(viagemDTO.getOrigem())
         .destino(viagemDTO.getDestino())
-        .horaEmbarque(viagemDTO.getHoraEmbarque())
-        .horaDesembarque(viagemDTO.getHoraDesembarque())
+        .previsaoSaida(viagemDTO.getPrevisaoSaida())
+        .previsaoChegada(viagemDTO.getPrevisaoChegada())
+        .horaSaida(viagemDTO.getHoraSaida())
+        .horaChegada(viagemDTO.getHoraChegada())
         .finalizada(viagemDTO.getFinalizada() == null ? false : viagemDTO.getFinalizada())
         .dataCadastro(viagemDTO.getDataCadastro() == null ? LocalDateTime.now() : viagemDTO.getDataCadastro())
         .dataAtualizacao(viagemDTO.getDataAtualizacao())
@@ -70,12 +74,13 @@ public class ViagemDTO implements Serializable {
     return ViagemDTO.builder()
         .id(viagem.getId())
         .motorista(viagem.getMotorista())
-        .passageiro(viagem.getPassageiro())
         .veiculo(viagem.getVeiculo())
         .origem(viagem.getOrigem())
         .destino(viagem.getDestino())
-        .horaEmbarque(viagem.getHoraEmbarque())
-        .horaDesembarque(viagem.getHoraDesembarque())
+        .previsaoSaida(viagem.getPrevisaoSaida())
+        .previsaoChegada(viagem.getPrevisaoChegada())
+        .horaSaida(viagem.getHoraSaida())
+        .horaChegada(viagem.getHoraChegada())
         .finalizada(viagem.getFinalizada())
         .dataCadastro(viagem.getDataCadastro())
         .dataAtualizacao(viagem.getDataAtualizacao())

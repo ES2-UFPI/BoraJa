@@ -13,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,15 +34,11 @@ public class Viagem implements Serializable {
   @Column(unique = true, nullable = false)
   private UUID id;
 
-  @OneToOne
+  @ManyToOne
   @JoinColumn(name = "motorista_id", nullable = false)
   private Motorista motorista;
 
-  @OneToOne
-  @JoinColumn(name = "passageiro_id", nullable = false)
-  private Passageiro passageiro;
-
-  @OneToOne
+  @ManyToOne
   @JoinColumn(name = "veiculo_placa", nullable = false)
   private Veiculo veiculo;
 
@@ -53,11 +50,20 @@ public class Viagem implements Serializable {
   @JoinColumn(name = "destino_id", nullable = false)
   private Localidade destino;
 
-  @Column(nullable = true)
-  private LocalDateTime horaEmbarque;
+  @Column(nullable = false)
+  private Integer quantidadeVagas;
+
+  @Column(nullable = false)
+  private LocalDateTime previsaoSaida;
+
+  @Column(nullable = false)
+  private LocalDateTime previsaoChegada;
 
   @Column(nullable = true)
-  private LocalDateTime horaDesembarque;
+  private LocalDateTime horaSaida;
+
+  @Column(nullable = true)
+  private LocalDateTime horaChegada;
 
   @Column(nullable = false)
   private Boolean finalizada;
@@ -71,7 +77,7 @@ public class Viagem implements Serializable {
   private LocalDateTime dataAtualizacao;
 
   public void finalizarViagem() {
-    this.horaDesembarque = LocalDateTime.now();
+    this.horaChegada = LocalDateTime.now();
     this.finalizada = true;
     this.dataAtualizacao = LocalDateTime.now();
   }
@@ -82,7 +88,7 @@ public class Viagem implements Serializable {
   }
 
   public void iniciarViagem() {
-    this.horaEmbarque = LocalDateTime.now();
+    this.horaSaida = LocalDateTime.now();
     this.finalizada = false;
     this.dataAtualizacao = LocalDateTime.now();
   }

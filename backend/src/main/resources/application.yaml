@@ -7,7 +7,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -27,12 +27,6 @@ server:
     enabled: false
   error:
     include-stacktrace: never
-
-allowed:
-  origins: "*"
-  methods: GET, POST, PUT, DELETE, OPTIONS
-
-environment: ${ENVIRONMENT:dev}
 
 logging:
   pattern:
