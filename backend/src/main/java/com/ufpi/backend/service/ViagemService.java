@@ -13,6 +13,7 @@ import com.ufpi.backend.model.dto.viagem.ViagemCreateDTO;
 import com.ufpi.backend.model.dto.viagem.ViagemDTO;
 import com.ufpi.backend.model.entity.Viagem;
 import com.ufpi.backend.model.enums.StatusViagem;
+import com.ufpi.backend.model.repository.LocalidadeRepository;
 import com.ufpi.backend.model.repository.MotoristaRepository;
 import com.ufpi.backend.model.repository.PassageiroRepository;
 import com.ufpi.backend.model.repository.VeiculoRepository;
@@ -28,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ViagemService {
 
   private final ViagemRepository viagemRepository;
+  private final LocalidadeRepository localidadeRepository;
   private final MotoristaRepository motoristaRepository;
   private final PassageiroRepository passageiroRepository;
   private final VeiculoRepository veiculoRepository;
@@ -50,6 +52,8 @@ public class ViagemService {
   public Viagem insert(ViagemCreateDTO viagemCreateDTO) {
     Viagem viagemTemp = ViagemCreateDTO.toEntity(viagemCreateDTO);
     viagemTemp.setDataCadastro(LocalDateTime.now());
+    viagemTemp.setOrigem(localidadeRepository.save(viagemTemp.getOrigem()));
+    viagemTemp.setDestino(localidadeRepository.save(viagemTemp.getDestino()));
     return viagemRepository.save(viagemTemp);
   }
 
@@ -123,7 +127,6 @@ public class ViagemService {
     if (viagemRepository.existsViagemByMotorista(viagemCreateDTO.getMotoristaId())) {
       throw new AppError("Motorista já possui viagem ativa.");
     }
-    throw new AppError("Unimplemented method 'verificarViagemCreateDTO'");
   }
 
   public Viagem atualizarStatus(UUID id, StatusViagem status) {

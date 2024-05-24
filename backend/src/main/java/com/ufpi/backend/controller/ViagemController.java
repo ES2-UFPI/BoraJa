@@ -47,7 +47,7 @@ public class ViagemController {
     return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
   }
 
-  @PutMapping("/finalizar/${id}")
+  @PutMapping("/finalizar/{id}")
   public ResponseEntity<ResponseModel<ViagemDTO>> finalizar(@PathVariable UUID id) {
     if (id == null) {
       throw new InvalidDataError("id", "Id não pode ser nulo");
@@ -58,7 +58,7 @@ public class ViagemController {
     return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
   }
 
-  @PutMapping("/cancelar/${id}")
+  @PutMapping("/cancelar/{id}")
   public ResponseEntity<ResponseModel<ViagemDTO>> cancelar(@PathVariable UUID id) {
     if (id == null) {
       throw new InvalidDataError("id", "Id não pode ser nulo");
@@ -69,7 +69,7 @@ public class ViagemController {
     return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
   }
 
-  @PutMapping("/iniciar/${id}")
+  @PutMapping("/iniciar/{id}")
   public ResponseEntity<ResponseModel<ViagemDTO>> iniciar(@PathVariable UUID id) {
     if (id == null) {
       throw new InvalidDataError("id", "Id não pode ser nulo");
