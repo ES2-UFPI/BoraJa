@@ -31,7 +31,6 @@ public class ViagemUpdateDTO implements Serializable {
     }
 
     return ViagemUpdateDTO.builder()
-        .passageiro(viagem.getPassageiro())
         .origem(viagem.getOrigem())
         .destino(viagem.getDestino())
         .build();
@@ -41,15 +40,12 @@ public class ViagemUpdateDTO implements Serializable {
     return Viagem.builder()
         .origem(origem)
         .destino(destino)
-        .passageiro(passageiro)
         .build();
   }
 
   public static Viagem mapViagemUpdate(ViagemDTO viagemExistente,
       ViagemUpdateDTO viagemUpdateDTO) {
     return Viagem.builder()
-        .passageiro(viagemUpdateDTO.getPassageiro() == null ? viagemExistente.getPassageiro()
-            : viagemUpdateDTO.getPassageiro())
         .origem(viagemUpdateDTO.getOrigem() == null ? viagemExistente.getOrigem()
             : viagemUpdateDTO.getOrigem())
         .destino(viagemUpdateDTO.getDestino() == null ? viagemExistente.getDestino()

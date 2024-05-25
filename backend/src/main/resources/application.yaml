@@ -28,12 +28,6 @@ server:
   error:
     include-stacktrace: never
 
-allowed:
-  origins: "*"
-  methods: GET, POST, PUT, DELETE, OPTIONS
-
-environment: ${ENVIRONMENT:dev}
-
 logging:
   pattern:
     console: "%yellow([%d{yyyy-MM-dd HH:mm:ss}]) - %clr(%-5level) %cyan(%logger{40}) : %msg %n"
