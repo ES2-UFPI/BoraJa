@@ -4,6 +4,7 @@ import { Button, Input } from 'react-native-elements';
 import { Image } from 'react-native';
 import { AuthContext } from './AuthProvider'; // Importa o AuthContext
 import { useRouter } from 'expo-router'; // Importa useRouter do Expo Router
+import { color } from 'react-native-elements/dist/helpers';
 
 export default function LoginScreen() {
   const { login } = useContext(AuthContext); // Usa o contexto de autenticação
@@ -65,6 +66,9 @@ export default function LoginScreen() {
           onPress={handleLogin}
           buttonStyle={styles.buttonStyle}
         />
+        <View style={styles.textContainer}>
+          <Text onPress={() => router.push('screens/cadastro')}>Não tem cadastro ainda? <Text style={styles.cadastrarText}>Cadastrar</Text></Text>
+        </View>
       </View>
     </View>
   );
@@ -78,27 +82,28 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   titleContainer: {
-    position: 'absolute',
     top: 0,
     width: '100%',
     alignItems: 'center',
-    marginTop: 80,
+    marginTop: 70,
   },
   textContainer: {
-    position: 'absolute',
     top: 0,
     width: '100%',
     alignItems: 'center',
-    marginTop: 180,
+    marginTop: 10,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
   },
+  cadastrarText: {
+    color: '#5271FF',
+  },
   inputContainer: {
     width: '80%',
-    marginTop: 100,
+    marginTop: 80,
   },
   buttonStyle: {
     height: 50,
@@ -110,4 +115,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
   },
+  buttonSpacer: {
+    height: 30,
+  }
 });
