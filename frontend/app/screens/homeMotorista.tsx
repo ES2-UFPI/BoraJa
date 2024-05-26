@@ -2,22 +2,14 @@ import { Text, View, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 import React, { useContext } from 'react';
 import { AuthContext } from '../AuthProvider'; // Importa o AuthContext
-import { useRouter } from 'expo-router'; // Importa useRouter do Expo Router
-import { Image } from 'react-native';
 
 export default function HomeScreen() {
   const { logout } = useContext(AuthContext); // Usa o contexto de autenticação
-  const router = useRouter(); // Obtém a função de redirecionamento
 
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
-        <Image source={require('@/assets/images/boraja_logo.jpg')} style={{ alignSelf: 'center', width: 230, height: 60 }} />
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button title="Entrar como motorista" onPress={() => router.push('screens/homeMotorista')} buttonStyle={styles.buttonStyle1} />
-        <View style={styles.buttonSpacer} /> 
-        <Button title="Entrar como passageiro" onPress={() => router.push('screens/homePassageiro')} buttonStyle={styles.buttonStyle2} />
+        <Text style={styles.title}>Início</Text>
       </View>
     </View>
   );

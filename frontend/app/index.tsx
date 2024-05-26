@@ -16,20 +16,22 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     try {
       // Enviar solicitação POST para o endpoint de login
-      const response = await fetch('http://localhost:8000/login/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      // const response = await fetch('http://localhost:8000/login/', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({ email, password }),
+      // });
 
-      // Verificar se a resposta do servidor é bem-sucedida
-      if (response.ok) {
-        router.push('screens/home');
+      // // Verificar se a resposta do servidor é bem-sucedida
+      // if (response.ok) {
+      //   router.push('screens/home');
+      if (password == '1234' && email == 'admin') {
+        router.push('screens/home'); // Redireciona para a tela inicial
       } else {
         // Se a resposta do servidor não for bem-sucedida, exiba uma mensagem de erro
-        console.error('Erro ao fazer login:', response.statusText);
+        console.error('Erro ao fazer login:');
       }
     } catch (error) {
       // Se ocorrer um erro durante a solicitação, exiba uma mensagem de erro
