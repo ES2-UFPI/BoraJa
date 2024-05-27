@@ -45,6 +45,7 @@ export default function LoginScreen() {
           value={email}
           leftIcon={<Icon name='envelope' size={18} color='#999' />}
           leftIconContainerStyle={{ marginRight: 10 }}
+          inputStyle={{color: '#777'}}
         />
         <Input
           placeholder='Senha'
@@ -53,6 +54,7 @@ export default function LoginScreen() {
           secureTextEntry
           leftIcon={<Icon name='lock' size={24} color='#999' />}
           leftIconContainerStyle={{ marginRight: 10 }}
+          inputStyle={{color: '#777'}}
         />
         {error && <Text style={styles.errorText}>{error}</Text>}
         <Button

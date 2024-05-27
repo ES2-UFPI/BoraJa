@@ -15,9 +15,9 @@ export default function HomeScreen() {
         <Image source={require('@/assets/images/boraja_logo.jpg')} style={{ alignSelf: 'center', width: 250, height: 60 }} />
       </View>
       <View style={styles.buttonContainer}>
-        <Button title="Entrar como motorista" onPress={() => router.push('screens/driver')} buttonStyle={styles.buttonStyle1} />
+        <Button title="Entrar como motorista" onPress={() => router.push('driver/homeDriver')} buttonStyle={styles.buttonStyle1} />
         <View style={styles.buttonSpacer} /> 
-        <Button title="Entrar como passageiro" onPress={() => router.push('screens/passenger')} buttonStyle={styles.buttonStyle2} />
+        <Button title="Entrar como passageiro" onPress={() => router.push('passenger/homePassenger')} buttonStyle={styles.buttonStyle2} />
       </View>
     </View>
   );
