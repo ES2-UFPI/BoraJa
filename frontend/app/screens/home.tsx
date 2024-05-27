@@ -1,23 +1,23 @@
 import { Text, View, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 import React, { useContext } from 'react';
-import { AuthContext } from '../AuthProvider'; // Importa o AuthContext
-import { useRouter } from 'expo-router'; // Importa useRouter do Expo Router
+import { AuthContext } from '../AuthProvider';
+import { useRouter } from 'expo-router';
 import { Image } from 'react-native';
 
 export default function HomeScreen() {
-  const { logout } = useContext(AuthContext); // Usa o contexto de autenticação
-  const router = useRouter(); // Obtém a função de redirecionamento
+  const { logout } = useContext(AuthContext);
+  const router = useRouter();
 
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
-        <Image source={require('@/assets/images/boraja_logo.jpg')} style={{ alignSelf: 'center', width: 230, height: 60 }} />
+        <Image source={require('@/assets/images/boraja_logo.jpg')} style={{ alignSelf: 'center', width: 250, height: 60 }} />
       </View>
       <View style={styles.buttonContainer}>
-        <Button title="Entrar como motorista" onPress={() => router.push('screens/homeMotorista')} buttonStyle={styles.buttonStyle1} />
+        <Button title="Entrar como motorista" onPress={() => router.push('screens/driver')} buttonStyle={styles.buttonStyle1} />
         <View style={styles.buttonSpacer} /> 
-        <Button title="Entrar como passageiro" onPress={() => router.push('screens/homePassageiro')} buttonStyle={styles.buttonStyle2} />
+        <Button title="Entrar como passageiro" onPress={() => router.push('screens/passenger')} buttonStyle={styles.buttonStyle2} />
       </View>
     </View>
   );
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     top: 0,
     width: '100%',
     alignItems: 'center',
-    marginTop: 50,
+    marginTop: 200,
   },
   title: {
     fontSize: 24,
@@ -48,14 +48,14 @@ const styles = StyleSheet.create({
     marginTop: 100,
   },
   buttonStyle1: {
-    height: 50,
+    height: 60,
     backgroundColor: 'black',
-    borderRadius: 30,
+    borderRadius: 12,
   },
   buttonStyle2: {
-    height: 50,
+    height: 60,
     backgroundColor: '#F3AC3D',
-    borderRadius: 30,
+    borderRadius: 12,
   },
   buttonSpacer: {
     height: 30,

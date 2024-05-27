@@ -61,7 +61,7 @@ export default function LoginScreen() {
           buttonStyle={styles.buttonStyle}
         />
         <View style={styles.textContainer}>
-          <Text onPress={() => router.push('screens/cadastro')}>Não tem cadastro ainda? <Text style={styles.registerText}>Cadastrar</Text></Text>
+          <Text onPress={() => router.push('screens/register')}>Não tem cadastro ainda? <Text style={styles.registerText}>Cadastrar</Text></Text>
         </View>
       </View>
     </View>
