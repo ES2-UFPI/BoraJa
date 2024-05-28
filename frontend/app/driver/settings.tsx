@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function BuscarViagemScreen() {
+export default function Settings() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Buscar Viagem Screen</Text>
+      <Text style={styles.title}>Configuração</Text>
     </View>
   );
 }
@@ -12,11 +12,11 @@ export default function BuscarViagemScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#fff',
     alignItems: 'center',
-    backgroundColor: 'white',
+    justifyContent: 'center',
   },
-  text: {
+  title: {
     fontSize: 24,
     fontWeight: 'bold',
   },
