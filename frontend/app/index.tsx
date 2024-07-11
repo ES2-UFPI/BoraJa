@@ -14,14 +14,6 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  // Substituir auth com implementação de Keycloack
-
-
-
-
-
-  //
-
   const handleLogin = async () => {
     if (!email || !password) {
       setError('Por favor, preencha todos os campos.');
