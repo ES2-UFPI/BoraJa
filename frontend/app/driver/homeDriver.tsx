@@ -2,6 +2,7 @@ import { Text, View, StyleSheet } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
 import { Button, Input } from 'react-native-elements';
 import { useState, useEffect } from 'react';
+import { useLocalSearchParams } from 'expo-router';
 import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
@@ -11,6 +12,7 @@ import {
 export default function DriverScreen() {
   const [location, setLocation] = useState<LocationObject | null>(null);
   const [region, setRegion] = useState<Region | null>(null);
+  const { token } = useLocalSearchParams();
 
   async function requestLocationPermissions() {
     const { granted } = await requestForegroundPermissionsAsync();
@@ -46,7 +48,7 @@ export default function DriverScreen() {
         </MapView>
       </View>
       <View style={styles.buttonContainer}>
-        <Button title="Iniciar carona" buttonStyle={styles.buttonStyle2} />
+        <Button title="Iniciar carona" onPress={() => console.log(token)} buttonStyle={styles.buttonStyle2} />
       </View>
     </View>
   );
