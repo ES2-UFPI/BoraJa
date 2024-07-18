@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, Region } from 'react-native-maps';
 import { Button, Input } from 'react-native-elements';
 import { useState, useEffect } from 'react';
 import {
@@ -10,12 +10,19 @@ import {
 
 export default function DriverScreen() {
   const [location, setLocation] = useState<LocationObject | null>(null);
+  const [region, setRegion] = useState<Region | null>(null);
 
   async function requestLocationPermissions() {
     const { granted } = await requestForegroundPermissionsAsync();
     if (granted) {
       const currentPosition = await getCurrentPositionAsync();
       setLocation(currentPosition);
+      setRegion({
+        latitude: currentPosition.coords.latitude,
+        longitude: currentPosition.coords.longitude,
+        latitudeDelta: 0.01, // Ajuste o valor para o nível de zoom desejado
+        longitudeDelta: 0.01, // Ajuste o valor para o nível de zoom desejado
+      });
     }
   }
 
@@ -26,16 +33,16 @@ export default function DriverScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.mapContainer}>
-        <MapView style={styles.map}>
-        {location && (
-          <Marker
-            coordinate={{
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-            }}
-            title="Você está aqui"
-          />
-        )}
+        <MapView style={styles.map} region={region as Region}>
+          {location && (
+            <Marker
+              coordinate={{
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+              }}
+              title="Você está aqui"
+            />
+          )}
         </MapView>
       </View>
       <View style={styles.buttonContainer}>
