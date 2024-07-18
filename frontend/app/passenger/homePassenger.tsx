@@ -2,6 +2,7 @@ import { Text, View, StyleSheet } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Button, Input } from 'react-native-elements';
 import { useState, useEffect } from 'react';
+import { useLocalSearchParams } from 'expo-router';
 import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
@@ -9,6 +10,7 @@ import {
 } from 'expo-location';
 
 export default function PassengerScreen() {
+  const { token } = useLocalSearchParams();
   const [location, setLocation] = useState<LocationObject | null>(null);
 
   async function requestLocationPermissions() {

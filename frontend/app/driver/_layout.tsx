@@ -1,4 +1,4 @@
-import { Tabs } from 'expo-router';
+import { Tabs, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
@@ -7,6 +7,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { token } = useLocalSearchParams();
 
   return (
     <Tabs
@@ -16,6 +17,7 @@ export default function TabLayout() {
       }}>
       <Tabs.Screen
         name="homeDriver"
+        initialParams={{ access_token: token }}
         options={{
           title: '',
           tabBarIcon: ({ color, focused }) => (
@@ -25,6 +27,7 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="profile"
+        initialParams={{ access_token: token }}
         options={{
           title: '',
           tabBarIcon: ({ color, focused }) => (
@@ -34,6 +37,7 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="settings"
+        initialParams={{ access_token: token }}
         options={{
           title: '',
           tabBarIcon: ({ color, focused }) => (

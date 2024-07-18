@@ -1,13 +1,13 @@
 import { Text, View, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
-import React, { useContext } from 'react';
-import { AuthContext } from '../AuthProvider';
+import React from 'react';
 import { useRouter } from 'expo-router';
 import { Image } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
 
 export default function HomeScreen() {
-  const { logout } = useContext(AuthContext);
   const router = useRouter();
+  const { token } = useLocalSearchParams();
 
   return (
     <View style={styles.container}>
@@ -15,9 +15,9 @@ export default function HomeScreen() {
         <Image source={require('@/assets/images/boraja_logo.jpg')} style={{ alignSelf: 'center', width: 250, height: 60 }} />
       </View>
       <View style={styles.buttonContainer}>
-        <Button title="Entrar como motorista" onPress={() => router.push('driver/homeDriver')} buttonStyle={styles.buttonStyle1} />
+        <Button title="Entrar como motorista" onPress={() => router.push({pathname: 'driver/homeDriver', params: {token: token}})} buttonStyle={styles.buttonStyle1} />
         <View style={styles.buttonSpacer} /> 
-        <Button title="Entrar como passageiro" onPress={() => router.push('passenger/homePassenger')} buttonStyle={styles.buttonStyle2} />
+        <Button title="Entrar como passageiro" onPress={() => router.push({pathname: 'passenger/homePassenger', params: {token: token}})} buttonStyle={styles.buttonStyle2} />
       </View>
     </View>
   );

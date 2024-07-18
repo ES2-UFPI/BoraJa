@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Button, Icon } from 'react-native-elements';
 
 export default function Profile() {
   const router = useRouter();
-
+  const { token } = useLocalSearchParams();
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Perfil</Text>
@@ -19,7 +19,7 @@ export default function Profile() {
       <View style={styles.buttonContainer}>
         <Button title="Editar Perfil" onPress={() => router.push('editProfile')} buttonStyle={styles.buttonStyle2} />
         <View style={styles.buttonSpacer} /> 
-        <Button title="Ajuda" buttonStyle={styles.buttonStyle2}/>
+        <Button title="Ajuda" onPress={() => console.log(token)} buttonStyle={styles.buttonStyle2}/>
       </View>
      
     </View>
