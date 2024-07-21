@@ -18,7 +18,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 
-public interface PassageiroRepository extends JpaRepository<Passageiro, UUID>, JpaSpecificationExecutor<Passageiro> {
+public interface PassageiroRepository extends JpaRepository<Passageiro, String>, JpaSpecificationExecutor<Passageiro> {
 
   public Optional<Passageiro> findByCpf(String cpf);
 

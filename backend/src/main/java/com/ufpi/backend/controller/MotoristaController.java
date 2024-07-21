@@ -64,11 +64,11 @@ public class MotoristaController {
     return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
   }
 
-  @PutMapping("/{id}")
-  public ResponseEntity<ResponseModel<Motorista>> atualizar(@PathVariable UUID id,
+  @PutMapping("/{username}")
+  public ResponseEntity<ResponseModel<Motorista>> atualizar(@PathVariable String username,
       @Valid @RequestBody MotoristaUpdateDTO motoristaUpdateDTO) {
     ResponseModel<Motorista> resposta = new ResponseModel<>();
-    MotoristaDTO motoristaExistente = motoristaService.consultarPorId(id);
+    MotoristaDTO motoristaExistente = motoristaService.consultarPorId(username);
     if (motoristaExistente == null) {
       throw new NotFoundError("Motorista não encontrado!");
     }
@@ -84,22 +84,22 @@ public class MotoristaController {
       resposta.setMessage("O motorista com ID informado não existe!");
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resposta);
     }
-    resposta.setData(motoristaService.atualizar(id, motoristaUpdate));
+    resposta.setData(motoristaService.atualizar(username, motoristaUpdate));
     resposta.setMessage("Operação realizada com sucesso!");
     return ResponseEntity.status(HttpStatus.OK).body(resposta);
   }
 
-  @PutMapping("/avaliar/{id}")
-  public ResponseEntity<ResponseModel<Motorista>> avaliar(@PathVariable UUID id, @RequestBody Float nota) {
+  @PutMapping("/avaliar/{username}")
+  public ResponseEntity<ResponseModel<Motorista>> avaliar(@PathVariable String username, @RequestBody Float nota) {
     ResponseModel<Motorista> resposta = new ResponseModel<>();
-    MotoristaDTO motoristaExistente = motoristaService.consultarPorId(id);
+    MotoristaDTO motoristaExistente = motoristaService.consultarPorId(username);
     if (motoristaExistente == null) {
       throw new NotFoundError("Motorista não encontrado!");
     }
     if (nota < 0 || nota > 5) {
       throw new InvalidDataError("nota", "Nota inválida!");
     }
-    resposta.setData(motoristaService.avaliar(id, nota));
+    resposta.setData(motoristaService.avaliar(username, nota));
     resposta.setMessage("Operação realizada com sucesso!");
     return ResponseEntity.status(HttpStatus.OK).body(resposta);
   }
@@ -115,18 +115,18 @@ public class MotoristaController {
     return ResponseEntity.status(HttpStatus.OK).body(resposta);
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<ResponseModel<MotoristaDTO>> consultaPorId(@PathVariable UUID id) {
-    var resultado = motoristaService.consultarPorId(id);
+  @GetMapping("/{username}")
+  public ResponseEntity<ResponseModel<MotoristaDTO>> consultaPorId(@PathVariable String username) {
+    var resultado = motoristaService.consultarPorId(username);
     ResponseModel<MotoristaDTO> resposta = new ResponseModel<>();
     resposta.setData(resultado);
     return ResponseEntity.status(HttpStatus.OK).body(resposta);
   }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable UUID id) {
-    var resultado = motoristaService.consultarPorId(id);
-    motoristaService.excluir(id);
+  @DeleteMapping("/{username}")
+  public ResponseEntity<Void> delete(@PathVariable String username) {
+    var resultado = motoristaService.consultarPorId(username);
+    motoristaService.excluir(username);
     ResponseModel<MotoristaDTO> resposta = new ResponseModel<>();
     resposta.setData(resultado);
     resposta.setMessage("Operação realizada com sucesso!");

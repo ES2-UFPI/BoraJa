@@ -22,7 +22,7 @@ public class PassageiroDTO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private UUID id;
+  private String username;
 
   private String foto;
 
@@ -57,7 +57,7 @@ public class PassageiroDTO implements Serializable {
   /*  */
   public static PassageiroDTO fromEntity(Passageiro passageiro) {
     return PassageiroDTO.builder()
-        .id(passageiro.getId())
+        .username(passageiro.getUsername())
         .foto(passageiro.getFoto() == null ? "" : passageiro.getFoto())
         .cpf(passageiro.getCpf())
         .nome(passageiro.getNome())

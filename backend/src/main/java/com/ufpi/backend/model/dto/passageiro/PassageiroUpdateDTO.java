@@ -52,7 +52,7 @@ public class PassageiroUpdateDTO implements Serializable {
   public static Passageiro mapPassageiroUpdate(PassageiroDTO passageiroExistente,
       PassageiroUpdateDTO passageiroUpdate) {
     return Passageiro.builder()
-        .id(passageiroExistente.getId())
+        .username(passageiroExistente.getUsername())
         .foto(passageiroUpdate.getFoto())
         .nome(passageiroUpdate.getNome() == null ? passageiroExistente.getNome() : passageiroUpdate.getNome())
         .cpf(passageiroExistente.getCpf())

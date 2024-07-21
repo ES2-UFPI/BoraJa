@@ -91,7 +91,7 @@ public class ViagemService {
     return ViagemDTO.fromEntity(resultado.get());
   }
 
-  public List<Viagem> findViagensByMotorista(UUID id) {
+  public List<Viagem> findViagensByMotorista(String id) {
     List<Viagem> result = viagemRepository.findByMotorista(id);
     if (!result.isEmpty()) {
       var message = String.format("Entidade 'Viagem' nao encontrada pelo id: %s",
@@ -102,7 +102,7 @@ public class ViagemService {
     return result;
   }
 
-  public Optional<Viagem> findViagemAtivaByMotorista(UUID id) {
+  public Optional<Viagem> findViagemAtivaByMotorista(String id) {
     Optional<Viagem> result = viagemRepository.findViagemAtivaByMotorista(id);
     if (!result.isEmpty()) {
       var message = String.format("Entidade 'Viagem' nao encontrada pelo id: %s",
@@ -113,7 +113,7 @@ public class ViagemService {
     return result;
   }
 
-  public Boolean existsViagemAtivaByMotorista(UUID id) {
+  public Boolean existsViagemAtivaByMotorista(String id) {
     return viagemRepository.existsViagemByMotorista(id);
   }
 
@@ -121,7 +121,7 @@ public class ViagemService {
     return viagemRepository.existsViagemByVeiculo(placa);
   }
 
-  public Boolean existsViagemAtivaByPassageiro(UUID passageiroId, UUID viagemId) {
+  public Boolean existsViagemAtivaByPassageiro(String passageiroId, UUID viagemId) {
     return vagaRepository.existsViagemAtivaByPassageiro(passageiroId, viagemId);
   }
 
@@ -171,7 +171,7 @@ public class ViagemService {
     return viagemRepository.save(viagem);
   }
 
-  public Vaga ingressar(UUID id, UUID passageiroId) {
+  public Vaga ingressar(UUID id, String passageiroId) {
     Viagem viagem = findById(id);
     Passageiro passageiro = passageiroRepository.findById(passageiroId).orElse(null);
 

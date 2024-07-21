@@ -31,7 +31,7 @@ public class PassageiroService {
     return passageiroRepository.findAll(especificar(filtro), paginar(filtro));
   }
 
-  public Passageiro findById(UUID id) {
+  public Passageiro findById(String id) {
     var result = passageiroRepository.findById(id);
 
     if (!result.isPresent()) {
@@ -50,7 +50,7 @@ public class PassageiroService {
     return passageiroRepository.save(passageiroTemp);
   }
 
-  public Passageiro atualizar(UUID id, Passageiro passageiro) {
+  public Passageiro atualizar(String id, Passageiro passageiro) {
     passageiro.setDataAtualizacao(LocalDateTime.now());
     return passageiroRepository.save(passageiro);
   }
@@ -64,7 +64,7 @@ public class PassageiroService {
     return passageiroRepository.findAll(paginacao);
   }
 
-  public PassageiroDTO consultarPorId(UUID id) {
+  public PassageiroDTO consultarPorId(String id) {
     var resultado = passageiroRepository.findById(id);
 
     if (!resultado.isPresent()) {
@@ -76,7 +76,7 @@ public class PassageiroService {
     return PassageiroDTO.fromEntity(resultado.get());
   }
 
-  public void excluir(UUID id) {
+  public void excluir(String id) {
     passageiroRepository.deleteById(id);
   }
 
