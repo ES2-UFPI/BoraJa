@@ -39,10 +39,10 @@ export default function Profile() {
         style={styles.profileImage}
         source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMggZhOIH1vXmnv0bCyBu8iEuYQO-Dw1kpp7_v2mwhw_SKksetiK0e4VWUak3pm-v-Moc&usqp=CAU' }}
       />
-      <Text style={styles.name}>Olá, {driverData ? `${driverData.given_name} ${driverData.family_name}` : 'Carregando...'}</Text>
-      <Text style={styles.stars}>4.5 <Icon name="star" size={15} color="black"/></Text>
+      <Text style={styles.name}>Olá, {driverData ? `${driverData.nome}` : 'Carregando...'}</Text>
+      <Text style={styles.stars}>{driverData ? `${driverData.avaliacao}` : 'Carregando...'}<Icon name="star" size={15} color="black"/></Text>
       <View style={styles.buttonContainer}>
-        <Button title="Editar Perfil" onPress={() => router.push('editProfile')} buttonStyle={styles.buttonStyle2} />
+        <Button title="Editar Perfil" onPress={() => router.push('screens/editProfile')} buttonStyle={styles.buttonStyle2} />
         <View style={styles.buttonSpacer} /> 
         <Button title="Ajuda" onPress={() => console.log(token)} buttonStyle={styles.buttonStyle2}/>
       </View>
