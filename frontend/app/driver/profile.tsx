@@ -18,7 +18,14 @@ export default function Profile() {
       if (storedToken) {
         const decoded: any = jwtDecode(storedToken);
         const driverId = decoded.preferred_username;
-        setDriverData({ given_name: decoded.given_name, family_name: decoded.family_name }); // Adicionar esta linha
+
+        try {
+          const response = await fetch(`http://localhost:8085/motorista/${driverId}`);
+          const data = await response.json();
+          setDriverData(data);
+        } catch (error) {
+          console.error('Erro ao buscar dados do motorista:', error);
+        }
       }
     };
     fetchToken();
