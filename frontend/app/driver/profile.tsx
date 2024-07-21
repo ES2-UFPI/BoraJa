@@ -1,11 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Button, Icon } from 'react-native-elements';
+import { getTokenFromFile } from '../tokenFileStorage';
+const { jwtDecode } = require('jwt-decode');
 
 export default function Profile() {
   const router = useRouter();
-  const { token } = useLocalSearchParams();
+  const [token, setToken] = useState<string | null>(null);
+  const [driverData, setDriverData] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const storedToken = await getTokenFromFile();
+      setToken(storedToken);
+
+      if (storedToken) {
+        const decoded: any = jwtDecode(storedToken);
+        const driverId = decoded.preferred_username;
+        setDriverData({ given_name: decoded.given_name, family_name: decoded.family_name }); // Adicionar esta linha
+      }
+    };
+    fetchToken();
+  }, []);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Perfil</Text>
@@ -14,14 +32,13 @@ export default function Profile() {
         style={styles.profileImage}
         source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMggZhOIH1vXmnv0bCyBu8iEuYQO-Dw1kpp7_v2mwhw_SKksetiK0e4VWUak3pm-v-Moc&usqp=CAU' }}
       />
-      <Text style={styles.name}>Olá, user.name </Text>
+      <Text style={styles.name}>Olá, {driverData ? `${driverData.given_name} ${driverData.family_name}` : 'Carregando...'}</Text>
       <Text style={styles.stars}>4.5 <Icon name="star" size={15} color="black"/></Text>
       <View style={styles.buttonContainer}>
         <Button title="Editar Perfil" onPress={() => router.push('editProfile')} buttonStyle={styles.buttonStyle2} />
         <View style={styles.buttonSpacer} /> 
         <Button title="Ajuda" onPress={() => console.log(token)} buttonStyle={styles.buttonStyle2}/>
       </View>
-     
     </View>
   );
 }
