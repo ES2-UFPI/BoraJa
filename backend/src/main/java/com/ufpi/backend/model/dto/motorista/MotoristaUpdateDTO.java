@@ -51,7 +51,7 @@ public class MotoristaUpdateDTO implements Serializable {
   public static Motorista mapMotoristaUpdate(MotoristaDTO motoristaExistente,
       MotoristaUpdateDTO motoristaUpdate) {
     return Motorista.builder()
-        .id(motoristaExistente.getId())
+        .username(motoristaExistente.getUsername())
         .foto(motoristaUpdate.getFoto())
         .nome(motoristaUpdate.getNome() == null ? motoristaExistente.getNome() : motoristaUpdate.getNome())
         .cpf(motoristaExistente.getCpf())

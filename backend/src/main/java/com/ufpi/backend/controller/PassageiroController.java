@@ -61,8 +61,8 @@ public class PassageiroController {
     return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
   }
 
-  @PutMapping("/{id}")
-  public ResponseEntity<ResponseModel<Passageiro>> atualizar(@PathVariable UUID id,
+  @PutMapping("/{username}")
+  public ResponseEntity<ResponseModel<Passageiro>> atualizar(@PathVariable String username,
       @Valid @RequestBody PassageiroUpdateDTO passageiroUpdateDTO) {
     ResponseModel<Passageiro> resposta = new ResponseModel<>();
     if (passageiroUpdateDTO.getEmail() != null || !passageiroUpdateDTO.getEmail().isEmpty()) {
@@ -70,14 +70,14 @@ public class PassageiroController {
         throw new InvalidDataError("email", "Email inválido!");
       }
     }
-    Passageiro passageiroUpdate = PassageiroUpdateDTO.mapPassageiroUpdate(passageiroService.consultarPorId(id),
+    Passageiro passageiroUpdate = PassageiroUpdateDTO.mapPassageiroUpdate(passageiroService.consultarPorId(username),
         passageiroUpdateDTO);
     if (passageiroUpdate == null) {
       resposta.setMessage("O passageiro com ID informado não existe!");
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resposta);
     }
 
-    resposta.setData(passageiroService.atualizar(id, passageiroUpdate));
+    resposta.setData(passageiroService.atualizar(username, passageiroUpdate));
     resposta.setMessage("Operação realizada com sucesso!");
     return ResponseEntity.status(HttpStatus.OK).body(resposta);
   }
@@ -93,18 +93,18 @@ public class PassageiroController {
     return ResponseEntity.status(HttpStatus.OK).body(resposta);
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<ResponseModel<PassageiroDTO>> consultaPorId(@PathVariable UUID id) {
-    var resultado = passageiroService.consultarPorId(id);
+  @GetMapping("/{username}")
+  public ResponseEntity<ResponseModel<PassageiroDTO>> consultaPorId(@PathVariable String username) {
+    var resultado = passageiroService.consultarPorId(username);
     ResponseModel<PassageiroDTO> resposta = new ResponseModel<>();
     resposta.setData(resultado);
     return ResponseEntity.status(HttpStatus.OK).body(resposta);
   }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable UUID id) {
-    var resultado = passageiroService.consultarPorId(id);
-    passageiroService.excluir(id);
+  @DeleteMapping("/{username}")
+  public ResponseEntity<Void> delete(@PathVariable String username) {
+    var resultado = passageiroService.consultarPorId(username);
+    passageiroService.excluir(username);
     ResponseModel<PassageiroDTO> resposta = new ResponseModel<>();
     resposta.setData(resultado);
     resposta.setMessage("Operação realizada com sucesso!");

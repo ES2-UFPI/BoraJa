@@ -18,7 +18,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 
-public interface MotoristaRepository extends JpaRepository<Motorista, UUID>, JpaSpecificationExecutor<Motorista> {
+public interface MotoristaRepository extends JpaRepository<Motorista, String>, JpaSpecificationExecutor<Motorista> {
 
   @Query(value = "select * from motorista where cpf = :cpf", nativeQuery = true)
   public Optional<Motorista> findByCpf(String cpf);

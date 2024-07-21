@@ -27,8 +27,8 @@ public class ViagemCreateDTO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  @NotNull(message = "propriedade motorista não pode ser nula.")
-  private UUID motoristaId;
+  @NotNull(message = "propriedade username não pode ser nula.")
+  private String motoristaId;
 
   @Min(value = 1, message = "propriedade quantidade de vagas deve ser maior que 0.")
   @Max(value = 5, message = "propriedade quantidade de vagas deve ser menor que 5.")
@@ -54,7 +54,7 @@ public class ViagemCreateDTO implements Serializable {
 
   public static Viagem toEntity(ViagemCreateDTO viagemDTO) {
     return Viagem.builder()
-        .motorista(Motorista.builder().id(viagemDTO.getMotoristaId()).build())
+        .motorista(Motorista.builder().username(viagemDTO.getMotoristaId()).build())
         .veiculo(Veiculo.builder().placa(viagemDTO.getVeiculoPlaca()).build())
         .destino(LocalidadeCreateDTO.toEntity(viagemDTO.getDestino()))
         .origem(LocalidadeCreateDTO.toEntity(viagemDTO.getOrigem()))
