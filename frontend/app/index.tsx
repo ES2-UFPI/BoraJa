@@ -4,7 +4,7 @@ import { makeRedirectUri, useAuthRequest, useAutoDiscovery, ResponseType } from 
 import { Button, Text, View, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Image } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { saveTokenToFile } from './tokenFileStorage';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -30,6 +30,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
     if (result) {
       if (result.type === 'success') {
         const { access_token } = result.params;
+        saveTokenToFile(access_token);
         // Use the token to authenticate with your backend or navigate to the home screen
         router.push({ pathname: 'screens/home', params: { token: access_token } });
       } else {
