@@ -19,14 +19,14 @@ import jakarta.persistence.criteria.Root;
 
 public interface ViagemRepository extends JpaRepository<Viagem, UUID>, JpaSpecificationExecutor<Viagem> {
 
-  @Query(value = "SELECT v FROM Viagem v inner join Motorista m on m.id = v.motorista_id and m.id = :id", nativeQuery = true)
-  List<Viagem> findByMotorista(UUID id);
+  @Query(value = "SELECT v FROM Viagem v inner join Motorista m on m.username = v.motorista_id and m.username = :username", nativeQuery = true)
+  List<Viagem> findByMotorista(String username);
 
-  @Query(value = "SELECT v FROM Viagem v WHERE v.motorista_id = :id AND v.horaSaida != NULL AND v.horaChegada = NULL", nativeQuery = true)
-  Optional<Viagem> findViagemAtivaByMotorista(UUID id);
+  @Query(value = "SELECT v FROM Viagem v WHERE v.motorista_id = :username AND v.horaSaida != NULL AND v.horaChegada = NULL", nativeQuery = true)
+  Optional<Viagem> findViagemAtivaByMotorista(String username);
 
-  @Query(value = "select case when count(v) > 0 then true else false end from viagem v inner join motorista m on m.id = v.motorista_id and m.id = :id and v.hora_saida != NULL and v.finalizada = false", nativeQuery = true)
-  Boolean existsViagemByMotorista(UUID id);
+  @Query(value = "select case when count(v) > 0 then true else false end from viagem v inner join motorista m on m.username = v.motorista_id and m.username = :username and v.hora_saida != NULL and v.finalizada = false", nativeQuery = true)
+  Boolean existsViagemByMotorista(String username);
 
   @Query(value = "select case when count(v) > 0 then true else false end from viagem v inner join veiculo m on m.placa = v.veiculo_placa and m.placa = :placa and v.hora_saida != NULL and v.finalizada = false", nativeQuery = true)
   Boolean existsViagemByVeiculo(String placa);

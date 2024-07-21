@@ -21,7 +21,7 @@ public class MotoristaDTO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private UUID id;
+  private String username;
 
   private String foto;
 
@@ -63,7 +63,7 @@ public class MotoristaDTO implements Serializable {
   /*  */
   public static MotoristaDTO fromEntity(Motorista motorista) {
     return MotoristaDTO.builder()
-        .id(motorista.getId())
+        .username(motorista.getUsername())
         .foto(motorista.getFoto() == null ? "" : motorista.getFoto())
         .cpf(motorista.getCpf())
         .nome(motorista.getNome())

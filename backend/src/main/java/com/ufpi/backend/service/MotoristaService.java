@@ -30,12 +30,12 @@ public class MotoristaService {
     return motoristaRepository.findAll(especificar(filtro), paginar(filtro));
   }
 
-  public Motorista findById(UUID id) {
-    var result = motoristaRepository.findById(id);
+  public Motorista findById(String username) {
+    var result = motoristaRepository.findById(username);
 
     if (!result.isPresent()) {
       var message = String.format("Entidade 'Pessoa' nao encontrada pelo id: %s",
-          id);
+          username);
       log.warn(message);
       throw new NotFoundError(message);
     }
@@ -49,12 +49,12 @@ public class MotoristaService {
     return motoristaRepository.save(motoristaTemp);
   }
 
-  public Motorista atualizar(UUID id, Motorista motorista) {
+  public Motorista atualizar(String id, Motorista motorista) {
     motorista.setDataAtualizacao(LocalDateTime.now());
     return motoristaRepository.save(motorista);
   }
 
-  public Motorista avaliar(UUID id, Float nota) {
+  public Motorista avaliar(String id, Float nota) {
     Motorista motorista = findById(id);
     motorista.setAvaliacao(calcularMedia(motorista.getCorridasAvaliadas(), nota, motorista.getAvaliacao()));
     motorista.incrementarCorridasAvaliadas();
@@ -71,7 +71,7 @@ public class MotoristaService {
     return motoristaRepository.findAll(paginacao);
   }
 
-  public MotoristaDTO consultarPorId(UUID id) {
+  public MotoristaDTO consultarPorId(String id) {
     var resultado = motoristaRepository.findById(id);
 
     if (!resultado.isPresent()) {
@@ -83,7 +83,7 @@ public class MotoristaService {
     return MotoristaDTO.fromEntity(resultado.get());
   }
 
-  public void excluir(UUID id) {
+  public void excluir(String id) {
     motoristaRepository.deleteById(id);
   }
 

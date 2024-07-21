@@ -28,9 +28,8 @@ public class Motorista implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
   @Column(unique = true)
-  private UUID id;
+  private String username;
 
   @Column(columnDefinition = "text", nullable = false)
   private String foto;
