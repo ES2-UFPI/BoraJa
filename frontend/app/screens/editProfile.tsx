@@ -25,13 +25,17 @@ export default function Profile() {
         const driverId = decoded.preferred_username;
 
         try {
-          const response = await fetch(`http://localhost:8085/motorista/${driverId}`);
+          const response = await fetch(`http://26.78.193.223:8085/motorista/${driverId}`);
+          if (!response.ok) {
+            throw new Error(`Erro ao buscar dados: ${response.statusText}`);
+          }
           const data = await response.json();
-          setDriverData(data);
-          setName(data.nome);
-          setEmail(data.email);
-          setFoto(data.foto);
-          setDataNascimento(data.dataNascimento);
+          const { nome, email, foto, dataNascimento } = data.data;
+          setDriverData(data.data);
+          setName(nome);
+          setEmail(email);
+          setFoto(foto);
+          setDataNascimento(dataNascimento);
         } catch (error) {
           console.error('Erro ao buscar dados do motorista:', error);
         }
@@ -96,10 +100,10 @@ export default function Profile() {
       <TouchableOpacity onPress={pickImage}>
         <Image
           style={styles.profileImage}
-          source={{ uri: foto ? `data:image/jpeg;base64,${foto}` : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMggZhOIH1vXmnv0bCyBu8iEuYQO-Dw1kpp7_v2mwhw_SKksetiK0e4VWUak3pm-v-Moc&usqp=CAU' }}
+          source={{ uri: driverData ? driverData.foto : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMggZhOIH1vXmnv0bCyBu8iEuYQO-Dw1kpp7_v2mwhw_SKksetiK0e4VWUak3pm-v-Moc&usqp=CAU' }}
         />
       </TouchableOpacity>
-      <Text style={styles.name}>Olá, {driverData ? `${driverData.given_name} ${driverData.family_name}` : 'Carregando...'}</Text>
+      <Text style={styles.name}>Olá, {driverData ? `${driverData.nome}` : 'Carregando...'}</Text>
       <Text style={styles.stars}>4.5 <Icon name="star" size={15} color="black"/></Text>
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Nome:</Text>
