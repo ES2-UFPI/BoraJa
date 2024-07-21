@@ -20,9 +20,9 @@ export default function Profile() {
         const passengerId = decoded.preferred_username;
 
         try {
-          const response = await fetch(`http://localhost:8085/passageiro/${passengerId}`);
+          const response = await fetch(`http://26.78.193.223:8085/passageiro/${passengerId}`);
           const data = await response.json();
-          setPassengerData(data);
+          setPassengerData(data.data);
         } catch (error) {
           console.error('Erro ao buscar dados do motorista:', error);
         }
@@ -56,14 +56,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     padding: 20,
-    paddingTop: 150, // Adicionei paddingTop para garantir que o título fique no topo
+    paddingTop: 150,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
-    position: 'absolute', // Adicionei position absolute
-    top: 30, // Ajuste a posição conforme necessário
+    position: 'absolute',
+    top: 30,
   },
   profileImage: {
     width: 100,
