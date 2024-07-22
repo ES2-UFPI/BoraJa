@@ -1,4 +1,4 @@
-name: DEV - Build & Deploy
+name: DEV - Build
 
 on:
   push:
@@ -29,31 +29,20 @@ jobs:
         run: npm install
         working-directory: frontend
 
-      - name: Run build
-        run: npm run build
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
         working-directory: frontend
 
-      - name: Upload production-ready build files
+      - name: Authenticate with Expo
+        run: eas login --token ${{ secrets.EXPO_TOKEN }}
+        working-directory: frontend
+
+      - name: Run build for Android
+        run: npm run build:android
+        working-directory: frontend
+
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: production-files
-          path: frontend/build
-
-  deploy:
-    name: Deploy
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/dev'
-
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: production-files
-          path: frontend/build
-
-      - name: Deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: frontend/build
+          name: android-apk
+          path: frontend/build/android/*.apk
