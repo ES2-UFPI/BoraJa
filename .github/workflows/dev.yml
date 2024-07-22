@@ -1,4 +1,4 @@
-name: DEV - Build
+name: Lint
 
 on:
   push:
@@ -7,12 +7,9 @@ on:
     branches: ["develop"]
 
 jobs:
-  build:
-    name: Build
+  lint:
+    name: Run Lint
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x]
 
     steps:
       - name: Check out repository
@@ -21,14 +18,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18.x
           cache: npm
-          cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
         run: npm install
         working-directory: frontend
 
-      - name: Run build
-        run: npm run build
+      - name: Run lint
+        run: npm run lint
         working-directory: frontend
