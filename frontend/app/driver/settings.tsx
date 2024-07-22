@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import BackButton from '../../components/BackButton';
 
 export default function Settings() {
   return (
     <View style={styles.container}>
+      <BackButton/>
       <Text style={styles.title}>Configuração</Text>
     </View>
   );
