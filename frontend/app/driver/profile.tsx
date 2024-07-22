@@ -1,45 +1,69 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Button } from 'react-native-elements';
-
+import { Button, Icon } from 'react-native-elements';
+import { getTokenFromFile } from '../tokenFileStorage';
+const { jwtDecode } = require('jwt-decode');
 
 export default function Profile() {
-
   const router = useRouter();
+  const [token, setToken] = useState<string | null>(null);
+  const [driverData, setDriverData] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const storedToken = await getTokenFromFile();
+      setToken(storedToken);
+
+      if (storedToken) {
+        const decoded: any = jwtDecode(storedToken);
+        const driverId = decoded.preferred_username;
+
+        try {
+          const response = await fetch(`http://26.78.193.223:8085/motorista/${driverId}`);
+          const data = await response.json();
+          setDriverData(data.data);
+        } catch (error) {
+          console.error('Erro ao buscar dados do motorista:', error);
+        }
+      }
+    };
+    fetchToken();
+  }, []);
 
   return (
     <View style={styles.container}>
-
-      <Text style={styles.name}>Configurações </Text>
+      <Text style={styles.title}>Perfil</Text>
       <View style={styles.buttonSpacer} />
       <Image
         style={styles.profileImage}
-        source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMggZhOIH1vXmnv0bCyBu8iEuYQO-Dw1kpp7_v2mwhw_SKksetiK0e4VWUak3pm-v-Moc&usqp=CAU' }}
+        source={{ uri: driverData ? driverData.foto : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMggZhOIH1vXmnv0bCyBu8iEuYQO-Dw1kpp7_v2mwhw_SKksetiK0e4VWUak3pm-v-Moc&usqp=CAU' }}
       />
-      <Text style={styles.name}>Olá , </Text>
-      
+      <Text style={styles.name}>Olá, {driverData ? `${driverData.nome}` : 'Carregando...'}</Text>
+      <Text style={styles.stars}>{driverData ? `${driverData.avaliacao}` : 'Carregando...'}<Icon name="star" size={15} color="black"/></Text>
       <View style={styles.buttonContainer}>
-        <Button title="Editar Perfil" onPress={() => router.push('driver/settings')} buttonStyle={styles.buttonStyle2} />
+        <Button title="Editar Perfil" onPress={() => router.push('screens/editProfile')} buttonStyle={styles.buttonStyle2} />
         <View style={styles.buttonSpacer} /> 
-        <Button title="Ajuda" buttonStyle={styles.buttonStyle2}/>
+        <Button title="Ajuda" onPress={() => console.log(driverData)} buttonStyle={styles.buttonStyle2}/>
       </View>
-     
     </View>
   );
 }
-
-
-
-
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
     padding: 20,
+    paddingTop: 150,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    position: 'absolute',
+    top: 30,
   },
   profileImage: {
     width: 100,
@@ -57,9 +81,14 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
   },
+  stars: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+  },
   buttonStyle2: {
     height: 60,
-    backgroundColor: '#00000;',
+    backgroundColor: '#F3AC3D',
     borderRadius: 12,
   },
 

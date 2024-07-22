@@ -1,35 +1,49 @@
-import React, { useState, useContext } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
-import { Button, Input } from 'react-native-elements';
-import { Image } from 'react-native';
-import { AuthContext } from './AuthProvider';
+import * as React from 'react';
+import * as WebBrowser from 'expo-web-browser';
+import { makeRedirectUri, useAuthRequest, useAutoDiscovery, ResponseType } from 'expo-auth-session';
+import { Button, Text, View, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { Image } from 'react-native';
+import { saveTokenToFile } from './tokenFileStorage';
 
-export default function LoginScreen() {
-  const { login } = useContext(AuthContext);
+WebBrowser.maybeCompleteAuthSession();
+
+export default function LoginScreen({ navigation }: { navigation: any }) {
   const router = useRouter();
+  const discovery = useAutoDiscovery('https://keycloak-production-f04b.up.railway.app/realms/boraja');
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = React.useState(false);
+
+  const [request, result, promptAsync] = useAuthRequest(
+    {
+      clientId: 'boraja-client',
+      scopes: ['openid', 'profile'],
+      redirectUri: makeRedirectUri({
+        native: 'myapp://app/screens/home', // Verifique se esta URL está configurada corretamente no Keycloak
+      }),
+      responseType: ResponseType.Token,
+    },
+    discovery
+  );
+
+  React.useEffect(() => {
+    if (result) {
+      if (result.type === 'success') {
+        const { access_token } = result.params;
+        saveTokenToFile(access_token);
+        // Use the token to authenticate with your backend or navigate to the home screen
+        router.push({ pathname: 'screens/home', params: { token: access_token } });
+      } else {
+        // Handle other result types or errors
+        console.log('Authentication failed', result);
+      }
+      setLoading(false);
+    }
+  }, [result, navigation]);
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      setError('Por favor, preencha todos os campos.');
-      return;
-    }
-
-    try {
-      if (password === '1234' && email === 'admin') {
-        router.push('screens/home');
-      } else {
-        setError('E-mail ou senha incorretos.');
-      }
-    } catch (error) {
-      console.error('Erro ao fazer login:', (error as Error).message);
-      setError('Erro ao fazer login. Tente novamente.');
-    }
+    setLoading(true);
+    await promptAsync();
   };
 
   return (
@@ -37,34 +51,15 @@ export default function LoginScreen() {
       <View style={styles.titleContainer}>
         <Image source={require('@/assets/images/boraja_logo.jpg')} style={{ alignSelf: 'center', width: 250, height: 60 }} />
       </View>
-  
-      <View style={styles.inputContainer}>
-        <Input
-          placeholder='E-mail'
-          onChangeText={(text) => setEmail(text)}
-          value={email}
-          leftIcon={<Icon name='envelope' size={18} color='#999' />}
-          leftIconContainerStyle={{ marginRight: 10 }}
-          inputStyle={{color: '#777'}}
-        />
-        <Input
-          placeholder='Senha'
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-          secureTextEntry
-          leftIcon={<Icon name='lock' size={24} color='#999' />}
-          leftIconContainerStyle={{ marginRight: 10 }}
-          inputStyle={{color: '#777'}}
-        />
-        {error && <Text style={styles.errorText}>{error}</Text>}
-        <Button
-          title="Login"
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <TouchableOpacity
+          style={{ flexDirection: 'row', alignItems: 'center' }}
           onPress={handleLogin}
-          buttonStyle={styles.buttonStyle}
-        />
-        <View style={styles.textContainer}>
-          <Text onPress={() => router.push('screens/register')}>Não tem cadastro ainda? <Text style={styles.registerText}>Cadastrar</Text></Text>
-        </View>
+        >
+          <Text style={{ color: 'white', borderRadius: 12, backgroundColor: '#F3AC3D', padding: 15, paddingHorizontal: 30, fontSize: 18, fontWeight: 'bold', alignItems: 'center', display: 'flex', flexDirection: 'row' }}>Acessar sua conta</Text>
+        </TouchableOpacity>
+        {loading && <ActivityIndicator size="large" color="#0000ff" />}
+        {result && <Text>{JSON.stringify(result, null, 2)}</Text>}
       </View>
     </View>
   );
@@ -78,41 +73,33 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   titleContainer: {
+    position: 'absolute',
     top: 0,
     width: '100%',
     alignItems: 'center',
-    marginTop: 70,
-  },
-  textContainer: {
-    top: 0,
-    width: '100%',
-    alignItems: 'center',
-    marginTop: 10,
+    marginTop: 200,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
   },
-  registerText: {
-    color: '#5271FF',
-  },
-  inputContainer: {
+  buttonContainer: {
     width: '80%',
-    marginTop: 70,
+    justifyContent: 'center',
+    marginTop: 100,
   },
-  buttonStyle: {
-    height: 50,
+  buttonStyle1: {
+    height: 60,
+    backgroundColor: 'black',
+    borderRadius: 12,
+  },
+  buttonStyle2: {
+    height: 60,
     backgroundColor: '#F3AC3D',
     borderRadius: 12,
-    marginTop: 15,
-  },
-  errorText: {
-    color: 'red',
-    marginBottom: 10,
-    textAlign: 'center',
   },
   buttonSpacer: {
     height: 30,
-  }
+  },
 });

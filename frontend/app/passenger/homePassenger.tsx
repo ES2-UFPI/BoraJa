@@ -1,7 +1,8 @@
 import { Text, View, StyleSheet } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, Region } from 'react-native-maps';
 import { Button, Input } from 'react-native-elements';
 import { useState, useEffect } from 'react';
+import { useLocalSearchParams } from 'expo-router';
 import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
@@ -10,12 +11,20 @@ import {
 
 export default function PassengerScreen() {
   const [location, setLocation] = useState<LocationObject | null>(null);
+  const [region, setRegion] = useState<Region | null>(null);
+  const { token } = useLocalSearchParams();
 
   async function requestLocationPermissions() {
     const { granted } = await requestForegroundPermissionsAsync();
     if (granted) {
       const currentPosition = await getCurrentPositionAsync();
       setLocation(currentPosition);
+      setRegion({
+        latitude: currentPosition.coords.latitude,
+        longitude: currentPosition.coords.longitude,
+        latitudeDelta: 0.01, // Ajuste o valor para o nível de zoom desejado
+        longitudeDelta: 0.01, // Ajuste o valor para o nível de zoom desejado
+      });
     }
   }
 
@@ -26,7 +35,7 @@ export default function PassengerScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.mapContainer}>
-        <MapView style={styles.map}>
+        <MapView style={styles.map} region={region as Region}>
         {location && (
           <Marker
             coordinate={{
