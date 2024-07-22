@@ -4,7 +4,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Button, Icon } from 'react-native-elements';
 import { getTokenFromFile } from '../tokenFileStorage';
 const { jwtDecode } = require('jwt-decode');
-import { launchImageLibrary } from 'react-native-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function Profile() {
   const router = useRouter();
@@ -13,7 +13,6 @@ export default function Profile() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [foto, setFoto] = useState('');
-  const [dataNascimento, setDataNascimento] = useState('');
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -35,7 +34,6 @@ export default function Profile() {
           setName(nome);
           setEmail(email);
           setFoto(foto);
-          setDataNascimento(dataNascimento);
         } catch (error) {
           console.error('Erro ao buscar dados do motorista:', error);
         }
@@ -44,10 +42,25 @@ export default function Profile() {
     fetchToken();
   }, []);
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setFoto(result.assets[0].uri);
+    }
+  };
+
   const handleUpdate = async () => {
     const driverId = driverData.id; // Assumindo que o ID do motorista está disponível em driverData.id
     try {
-      const response = await fetch(`http://localhost:8085/motorista/${driverId}`, {
+      const response = await fetch(`http://26.78.193.223:8085/motorista/${driverId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -56,7 +69,6 @@ export default function Profile() {
           nome: name,
           email: email,
           foto: foto,
-          dataNascimento: dataNascimento,
         }),
       });
 
@@ -71,28 +83,6 @@ export default function Profile() {
     }
   };
 
-  const pickImage = async () => {
-    const result = await launchImageLibrary({
-      mediaType: 'photo',
-      includeBase64: true,
-      maxHeight: 200,
-      maxWidth: 200,
-    });
-
-    if (result.didCancel) {
-      console.log('User cancelled image picker');
-    } else if (result.assets && result.assets.length > 0) {
-      const { base64 } = result.assets[0];
-      if (base64) {
-        setFoto(base64);
-      } else {
-        console.log('Base64 string is undefined');
-      }
-    } else {
-      console.log('Unexpected response: ', result);
-    }
-  }
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Perfil</Text>
@@ -104,7 +94,7 @@ export default function Profile() {
         />
       </TouchableOpacity>
       <Text style={styles.name}>Olá, {driverData ? `${driverData.nome}` : 'Carregando...'}</Text>
-      <Text style={styles.stars}>4.5 <Icon name="star" size={15} color="black"/></Text>
+      <Text style={styles.stars}>{driverData ? `${driverData.avaliacao}` : 'Carregando...'} <Icon name="star" size={15} color="black"/></Text>
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Nome:</Text>
         <TextInput
@@ -118,17 +108,11 @@ export default function Profile() {
           value={email}
           onChangeText={setEmail}
         />
-        <Text style={styles.label}>Foto (Base64):</Text>
-        <TextInput
-          style={styles.input}
-          value={foto}
-          onChangeText={setFoto}
-        />
-        <Text style={styles.label}>Data de Nascimento:</Text>
-        <TextInput
-          style={styles.input}
-          value={dataNascimento}
-          onChangeText={setDataNascimento}
+        <Text style={styles.label}>Foto:</Text>
+        <Button
+          title="Escolher foto"
+          onPress={pickImage}
+          buttonStyle={styles.buttonStyle2}
         />
       </View>
       <View style={styles.buttonContainer}>
@@ -191,5 +175,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     width: '100%',
+    marginBottom: 10,
   },
 });
