@@ -1,31 +1,41 @@
-import { Text, View, StyleSheet, Modal } from 'react-native';
-import MapView, { Region } from 'react-native-maps';
-import { Button, Input } from 'react-native-elements';
-import { useRouter } from 'expo-router';
-import { useState, useEffect } from 'react';
-import { useLocalSearchParams } from 'expo-router';
-import BackButton from '../../components/BackButton';
+import React, { useState, useEffect } from 'react';
+import { Text, View, StyleSheet, Modal, Button } from 'react-native';
+import MapView, { Marker, Region } from 'react-native-maps';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
   LocationObject
 } from 'expo-location';
-import moment from 'moment';
+import { Input } from 'react-native-elements';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+const { jwtDecode } = require('jwt-decode');
 
 export default function DriverScreen() {
   const router = useRouter();
   const [location, setLocation] = useState<LocationObject | null>(null);
   const [region, setRegion] = useState<Region | null>(null);
-  const { token } = useLocalSearchParams();
   const [modalVisible, setModalVisible] = useState(false);
   const [confirmLocationVisible, setConfirmLocationVisible] = useState(false);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [tripDetails, setTripDetails] = useState({
     motoristaId: '',
     previsaoSaida: '',
+    previsaoChegada: '',
     quantidadeVagas: 0,
     veiculoPlaca: '',
-    localizacao: { latitude: 0, longitude: 0 },
+    origem: { latitude: 0, longitude: 0, nome: '' },
+    destino: { latitude: 0, longitude: 0, nome: '' },
   });
+  const { token } = useLocalSearchParams();
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
 
   async function requestLocationPermissions() {
     const { granted } = await requestForegroundPermissionsAsync();
@@ -35,8 +45,8 @@ export default function DriverScreen() {
       setRegion({
         latitude: currentPosition.coords.latitude,
         longitude: currentPosition.coords.longitude,
-        latitudeDelta: 0.01, // Ajuste o valor para o nível de zoom desejado
-        longitudeDelta: 0.01, // Ajuste o valor para o nível de zoom desejado
+        latitudeDelta: 0.01, // Adjusted for desired zoom level
+        longitudeDelta: 0.01, // Adjusted for desired zoom level
       });
     }
   }
@@ -47,14 +57,27 @@ export default function DriverScreen() {
 
   const handleCreateTrip = async () => {
     try {
-      const formattedPrevisaoSaida = moment(tripDetails.previsaoSaida).format('YYYY-MM-DDTHH:mm:ss');
+      const decodedToken = jwtDecode(token);
+      const motoristaId = decodedToken.preferred_username;
+
+      const formattedPrevisaoSaida = new Date(tripDetails.previsaoSaida).toISOString();
+      const formattedPrevisaoChegada = new Date(tripDetails.previsaoChegada).toISOString();
+
       const response = await fetch('http://26.78.193.223:8085/viagem', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ ...tripDetails, previsaoSaida: formattedPrevisaoSaida }),
+        body: JSON.stringify({
+          motoristaId,
+          previsaoSaida: formattedPrevisaoSaida,
+          previsaoChegada: formattedPrevisaoChegada,
+          quantidadeVagas: tripDetails.quantidadeVagas,
+          veiculoPlaca: tripDetails.veiculoPlaca,
+          origem: tripDetails.origem,
+          destino: tripDetails.destino,
+        }),
       });
       const data = await response.json();
       setModalVisible(false);
@@ -64,11 +87,16 @@ export default function DriverScreen() {
     }
   };
 
+  const handleConfirm = (date: Date) => {
+    setTripDetails({ ...tripDetails, previsaoSaida: date.toISOString() });
+    hideDatePicker();
+  };
+
   const handleConfirmLocation = () => {
     if (region) {
       setTripDetails({
         ...tripDetails,
-        localizacao: { latitude: region.latitude, longitude: region.longitude },
+        destino: { latitude: region.latitude, longitude: region.longitude, nome: "" },
       });
       setConfirmLocationVisible(false);
     }
@@ -76,7 +104,6 @@ export default function DriverScreen() {
 
   return (
     <View style={styles.container}>
-      <BackButton/>
       <View style={styles.mapContainer}>
         <MapView
           style={styles.map}
@@ -96,33 +123,29 @@ export default function DriverScreen() {
         )}
       </View>
       <View style={styles.buttonContainer}>
-        <Button title="Iniciar carona" onPress={() => setModalVisible(true)} buttonStyle={styles.buttonStyle} />
+        <Button title="Iniciar carona" onPress={() => setModalVisible(true)} />
       </View>
       <Modal visible={modalVisible} animationType="slide">
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Iniciar Nova Viagem</Text>
-          <Input placeholder="Horário de Saída" onChangeText={(text) => setTripDetails({ ...tripDetails, previsaoSaida: text })} />
-          <Input placeholder="Quantidade de Vagas" keyboardType="numeric" onChangeText={(text) => setTripDetails({ ...tripDetails, quantidadeVagas: parseInt(text) })} />
-          <Input placeholder="Veículo" onChangeText={(text) => setTripDetails({ ...tripDetails, veiculoPlaca: text })} />
+          <Button title="Selecionar Horário de Saída" onPress={showDatePicker} />
+          <Input
+            placeholder="Quantidade de Vagas"
+            keyboardType="numeric"
+            onChangeText={(text) => setTripDetails({ ...tripDetails, quantidadeVagas: parseInt(text) })}
+          />
+          <Input
+            placeholder="Veículo"
+            onChangeText={(text) => setTripDetails({ ...tripDetails, veiculoPlaca: text })}
+          />
           <View style={styles.buttonSpacer} />
           <View style={styles.rowContainer}>
-            <Input
-              placeholder="Latitude"
-              keyboardType="numeric"
-              value={tripDetails.localizacao.latitude.toString()}
-              onChangeText={(text) => setTripDetails({ ...tripDetails, localizacao: { ...tripDetails.localizacao, latitude: parseFloat(text) } })}
-              containerStyle={styles.halfInput}
+            <Button
+              title="⌖"
+              onPress={() => setConfirmLocationVisible(true)}
             />
-            <Input
-              placeholder="Longitude"
-              keyboardType="numeric"
-              value={tripDetails.localizacao.longitude.toString()}
-              onChangeText={(text) => setTripDetails({ ...tripDetails, localizacao: { ...tripDetails.localizacao, longitude: parseFloat(text) } })}
-              containerStyle={styles.halfInput}
-            />
-            <Button title="⌖" onPress={() => setConfirmLocationVisible(true)} buttonStyle={styles.halfButton} titleStyle={styles.buttonTitle} />
           </View>
-          <Button title="Criar Viagem" onPress={handleCreateTrip} buttonStyle={styles.buttonStyle} />
+          <Button title="Criar Viagem" onPress={handleCreateTrip} />
           <View style={styles.buttonSpacer} />
           <Button
             title="Cancelar"
@@ -130,12 +153,17 @@ export default function DriverScreen() {
               setRegion({
                 latitude: location?.coords.latitude ?? 0,
                 longitude: location?.coords.longitude ?? 0,
-                latitudeDelta: 0.01, // Ajuste conforme necessário
-                longitudeDelta: 0.01, // Ajuste conforme necessário
+                latitudeDelta: 0.01, // Ajusted as necessary
+                longitudeDelta: 0.01, // Ajusted as necessary
               });
               setModalVisible(false);
             }}
-            buttonStyle={styles.buttonStyle}
+          />
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="datetime"
+            onConfirm={handleConfirm}
+            onCancel={hideDatePicker}
           />
         </View>
       </Modal>
@@ -154,8 +182,8 @@ export default function DriverScreen() {
               </View>
             </View>
           </View>
-          <Button title="Confirmar Localização" onPress={handleConfirmLocation} buttonStyle={styles.buttonStyle} />
-          <Button title="Cancelar" onPress={() => setConfirmLocationVisible(false)} buttonStyle={styles.buttonStyle} />
+          <Button title="Confirmar Localização" onPress={handleConfirmLocation} />
+          <Button title="Cancelar" onPress={() => setConfirmLocationVisible(false)} />
         </View>
       </Modal>
     </View>
@@ -178,42 +206,36 @@ const styles = StyleSheet.create({
     width: '90%',
     paddingHorizontal: 10,
   },
-  buttonStyle: {
-    height: 50,
-    borderRadius: 12,
-    width: 180,
-    backgroundColor: '#F3AC3D',
-    marginHorizontal: 5,
-  },
   mapContainer: {
     width: '100%',
     height: '100%',
-    borderWidth: 2,
-    borderColor: '#444',
   },
   map: {
     flex: 1,
   },
-  buttonTitle: {
-    fontSize: 50,  // Ajuste o tamanho do símbolo conforme necessário
-    color: '#fff',
-    marginTop: -20,
+  buttonSpacer: {
+    height: 10,
   },
-  pointerContainer: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginLeft: -15,
-    marginTop: -15,
-    zIndex: 10,
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
   },
-  pointer: {
+  miraOuter: {
     width: 30,
     height: 30,
-    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 15,
     borderWidth: 2,
-    borderColor: '#fff',
+    borderColor: 'red',
+    backgroundColor: 'transparent',
+  },
+  miraInner: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: 'red',
   },
   locationMarkerContainer: {
     position: 'absolute',
@@ -221,16 +243,8 @@ const styles = StyleSheet.create({
     left: '50%',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: -63,
+    marginLeft: -15,
     marginTop: -15,
-  },
-  locationMarker: {
-    width: 30,
-    height: 30,
-    backgroundColor: 'blue',
-    borderRadius: 15,
-    borderWidth: 2,
-    borderColor: '#fff',
   },
   locationText: {
     marginTop: 5,
@@ -250,38 +264,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
   },
-  buttonSpacer: {
-    height: 10,
-  },
-  rowContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  halfInput: {
-    width: '40%',
-  },
-  halfButton: {
-    height: 50,
-    borderRadius: 12,
-    backgroundColor: '#F3AC3D',
-    marginHorizontal: 5,
-    width: '47%',
-  },
-  miraOuter: {
-    width: 30,
-    height: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 15,
-    borderWidth: 2,
-    borderColor: 'red',
-    backgroundColor: 'transparent',
-  },
-  miraInner: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: 'red',
+  pointerContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginLeft: -15,
+    marginTop: -15,
+    zIndex: 10,
   },
 });
