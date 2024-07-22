@@ -10,6 +10,7 @@ import {
   getCurrentPositionAsync,
   LocationObject
 } from 'expo-location';
+import moment from 'moment';
 
 export default function DriverScreen() {
   const router = useRouter();
@@ -46,13 +47,14 @@ export default function DriverScreen() {
 
   const handleCreateTrip = async () => {
     try {
+      const formattedPrevisaoSaida = moment(tripDetails.previsaoSaida).format('YYYY-MM-DDTHH:mm:ss');
       const response = await fetch('http://26.78.193.223:8085/viagem', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(tripDetails),
+        body: JSON.stringify({ ...tripDetails, previsaoSaida: formattedPrevisaoSaida }),
       });
       const data = await response.json();
       setModalVisible(false);
