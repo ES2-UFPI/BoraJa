@@ -56,6 +56,13 @@ export default function DriverScreen() {
     requestLocationPermissions();
   }, []);
 
+  const calculateEstimatedArrivalTime = (distance: number) => {
+    const estimatedTimeInMinutes = distance / 50 * 60; // Assuming an average speed of 50 km/h
+    const estimatedArrivalTime = new Date(tripDetails.previsaoSaida);
+    estimatedArrivalTime.setMinutes(estimatedArrivalTime.getMinutes() + estimatedTimeInMinutes);
+    return estimatedArrivalTime.toISOString();
+  };
+
   const handleCreateTrip = async () => {
     try {
       const decodedToken = jwtDecode(token);
@@ -89,10 +96,17 @@ export default function DriverScreen() {
   };
 
   const handleConfirm = (date: Date) => {
-    setTripDetails({ ...tripDetails, previsaoSaida: date.toISOString() });
+    const updatedTripDetails = { ...tripDetails, previsaoSaida: date.toISOString() };
+    const distance = calculateDistance(
+      updatedTripDetails.origem.latitude,
+      updatedTripDetails.origem.longitude,
+      updatedTripDetails.destino.latitude,
+      updatedTripDetails.destino.longitude
+    );
+    updatedTripDetails.previsaoChegada = calculateEstimatedArrivalTime(distance);
+    setTripDetails(updatedTripDetails);
     hideDatePicker();
   };
-
   const handleConfirmLocation = () => {
     if (region) {
       setTripDetails({
@@ -101,6 +115,17 @@ export default function DriverScreen() {
       });
       setConfirmLocationVisible(false);
     }
+  };
+
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+    const R = 6371; // Radius of the earth in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a =
+      0.5 - Math.cos(dLat) / 2 +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+      (1 - Math.cos(dLon)) / 2;
+    return R * 2 * Math.asin(Math.sqrt(a));
   };
 
   return (
