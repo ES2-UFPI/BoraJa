@@ -1,4 +1,4 @@
-name: DEV - Build & Deploy
+name: DEV - Build
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build Android
+    name: Build
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -29,23 +29,6 @@ jobs:
         run: npm install
         working-directory: frontend
 
-      - name: Install EAS CLI
-        run: npm install -g eas-cli
+      - name: Run build
+        run: npm run build
         working-directory: frontend
-
-      - name: Set EXPO_TOKEN environment variable
-        run: echo "EXPO_TOKEN=${{ secrets.EXPO_TOKEN }}" >> $GITHUB_ENV
-
-      - name: Configure EAS project
-        run: eas build:configure
-        working-directory: frontend
-
-      - name: Run build for Android
-        run: npm run build:android
-        working-directory: frontend
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-apk
-          path: frontend/build/android/*.apk

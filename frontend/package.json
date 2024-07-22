@@ -10,8 +10,7 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "build": "expo export",
-    "build:android": "eas build --platform android"
+    "build": "expo export:web"
   },
   "jest": {
     "preset": "jest-expo"
@@ -20,6 +19,7 @@
     "@expo/vector-icons": "^14.0.0",
     "@react-navigation/drawer": "^6.6.15",
     "@react-navigation/native": "^6.0.2",
+    "eas-cli": "^10.2.1",
     "expo": "~51.0.5",
     "expo-auth-session": "^5.5.2",
     "expo-constants": "~16.0.1",
