@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { Button, Icon } from 'react-native-elements';
 import { getTokenFromFile } from '../tokenFileStorage';
 const { jwtDecode } = require('jwt-decode');
+import BackButton from '../../components/BackButton';
 
 export default function Profile() {
   const router = useRouter();
@@ -33,6 +34,7 @@ export default function Profile() {
 
   return (
     <View style={styles.container}>
+      <BackButton/>
       <Text style={styles.title}>Perfil</Text>
       <View style={styles.buttonSpacer} />
       <Image

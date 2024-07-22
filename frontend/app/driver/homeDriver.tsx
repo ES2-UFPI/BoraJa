@@ -3,6 +3,7 @@ import MapView, { Marker, Region } from 'react-native-maps';
 import { Button, Input } from 'react-native-elements';
 import { useState, useEffect } from 'react';
 import { useLocalSearchParams } from 'expo-router';
+import BackButton from '../../components/BackButton';
 import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
@@ -34,6 +35,7 @@ export default function DriverScreen() {
 
   return (
     <View style={styles.container}>
+      <BackButton/>
       <View style={styles.mapContainer}>
         <MapView style={styles.map} region={region as Region}>
           {location && (
