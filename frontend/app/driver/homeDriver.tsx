@@ -103,10 +103,12 @@ export default function DriverScreen() {
       updatedTripDetails.destino.latitude,
       updatedTripDetails.destino.longitude
     );
-    updatedTripDetails.previsaoChegada = calculateEstimatedArrivalTime(distance);
+    const previsaoChegada = new Date(date.getTime() + 10 * 60000);
+    updatedTripDetails.previsaoChegada = previsaoChegada.toISOString();
     setTripDetails(updatedTripDetails);
     hideDatePicker();
   };
+
   const handleConfirmLocation = () => {
     if (region) {
       setTripDetails({
@@ -166,6 +168,20 @@ export default function DriverScreen() {
           />
           <View style={styles.buttonSpacer} />
           <View style={styles.rowContainer}>
+            <Input
+              placeholder="Latitude"
+              keyboardType="numeric"
+              value={tripDetails.destino.latitude.toString()}
+              editable={false}
+              containerStyle={styles.halfInput}
+            />
+            <Input
+              placeholder="Longitude"
+              keyboardType="numeric"
+              value={tripDetails.destino.longitude.toString()}
+              editable={false}
+              containerStyle={styles.halfInput}
+            />
           <Button
               title="⌖"
               onPress={() => setConfirmLocationVisible(true)}
