@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Modal, Button } from 'react-native';
+import { Text, View, StyleSheet, Modal } from 'react-native';
+import { Button } from 'react-native-elements';
 import MapView, { Marker, Region } from 'react-native-maps';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import {
@@ -123,12 +124,12 @@ export default function DriverScreen() {
         )}
       </View>
       <View style={styles.buttonContainer}>
-        <Button title="Iniciar carona" onPress={() => setModalVisible(true)} />
+        <Button title="Iniciar carona" buttonStyle={styles.buttonStyle} onPress={() => setModalVisible(true)} />
       </View>
       <Modal visible={modalVisible} animationType="slide">
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Iniciar Nova Viagem</Text>
-          <Button title="Selecionar Horário de Saída" onPress={showDatePicker} />
+          <Button title="Selecionar Horário de Saída" buttonStyle={styles.buttonStyle} onPress={showDatePicker} />
           <Input
             placeholder="Quantidade de Vagas"
             keyboardType="numeric"
@@ -140,15 +141,18 @@ export default function DriverScreen() {
           />
           <View style={styles.buttonSpacer} />
           <View style={styles.rowContainer}>
-            <Button
+          <Button
               title="⌖"
               onPress={() => setConfirmLocationVisible(true)}
+              buttonStyle={styles.halfButton}
+              titleStyle={styles.buttonTitle}
             />
           </View>
-          <Button title="Criar Viagem" onPress={handleCreateTrip} />
+          <Button title="Criar Viagem" buttonStyle={styles.buttonStyle} onPress={handleCreateTrip} />
           <View style={styles.buttonSpacer} />
           <Button
             title="Cancelar"
+            buttonStyle={styles.buttonStyle}
             onPress={() => {
               setRegion({
                 latitude: location?.coords.latitude ?? 0,
@@ -182,8 +186,8 @@ export default function DriverScreen() {
               </View>
             </View>
           </View>
-          <Button title="Confirmar Localização" onPress={handleConfirmLocation} />
-          <Button title="Cancelar" onPress={() => setConfirmLocationVisible(false)} />
+          <Button title="Confirmar Localização" onPress={handleConfirmLocation} buttonStyle={styles.buttonStyle} />
+          <Button title="Cancelar" buttonStyle={styles.buttonStyle} onPress={() => setConfirmLocationVisible(false)} />
         </View>
       </Modal>
     </View>
@@ -206,36 +210,42 @@ const styles = StyleSheet.create({
     width: '90%',
     paddingHorizontal: 10,
   },
+  buttonStyle: {
+    height: 50,
+    borderRadius: 12,
+    width: 180,
+    backgroundColor: '#F3AC3D',
+    marginHorizontal: 5,
+  },
   mapContainer: {
     width: '100%',
     height: '100%',
+    borderWidth: 2,
+    borderColor: '#444',
   },
   map: {
     flex: 1,
   },
-  buttonSpacer: {
-    height: 10,
+  buttonTitle: {
+    fontSize: 50,  // Ajuste o tamanho do símbolo conforme necessário
+    color: '#fff',
+    marginTop: -20,
   },
-  rowContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
+  pointerContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginLeft: -15,
+    marginTop: -15,
+    zIndex: 10,
   },
-  miraOuter: {
+  pointer: {
     width: 30,
     height: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: 'red',
     borderRadius: 15,
     borderWidth: 2,
-    borderColor: 'red',
-    backgroundColor: 'transparent',
-  },
-  miraInner: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: 'red',
+    borderColor: '#fff',
   },
   locationMarkerContainer: {
     position: 'absolute',
@@ -243,8 +253,16 @@ const styles = StyleSheet.create({
     left: '50%',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: -15,
+    marginLeft: -63,
     marginTop: -15,
+  },
+  locationMarker: {
+    width: 30,
+    height: 30,
+    backgroundColor: 'blue',
+    borderRadius: 15,
+    borderWidth: 2,
+    borderColor: '#fff',
   },
   locationText: {
     marginTop: 5,
@@ -264,12 +282,38 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
   },
-  pointerContainer: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginLeft: -15,
-    marginTop: -15,
-    zIndex: 10,
+  buttonSpacer: {
+    height: 10,
   },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  halfInput: {
+    width: '40%',
+  },
+  halfButton: {
+    height: 50,
+    borderRadius: 12,
+    backgroundColor: '#F3AC3D',
+    marginHorizontal: 5,
+    width: '47%',
+  },
+  miraOuter: {
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 15,
+    borderWidth: 2,
+    borderColor: 'red',
+    backgroundColor: 'transparent',
+  },
+  miraInner: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: 'red',
+  }
 });
