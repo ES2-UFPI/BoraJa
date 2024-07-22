@@ -29,7 +29,7 @@ export default function TripDetails() {
   useEffect(() => {
     const fetchTripDetails = async () => {
       try {
-        const response = await fetch(`http://26.78.193.223:8085/viagem/search?id=${tripId}`, {
+        const response = await fetch(`http://localhost:8085/viagem/search?id=${tripId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -46,7 +46,7 @@ export default function TripDetails() {
 
     const fetchParticipants = async () => {
       try {
-        const response = await fetch(`http://26.78.193.223:8085/viagem/${tripId}/participantes`, {
+        const response = await fetch(`http://localhost:8085/viagem/${tripId}/participantes`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -73,7 +73,7 @@ export default function TripDetails() {
 
   const handleStartTrip = async () => {
     try {
-      const response = await fetch(`http://26.78.193.223:8085/viagem/iniciar/${tripId}`, {
+      const response = await fetch(`http://localhost:8085/viagem/iniciar/${tripId}`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

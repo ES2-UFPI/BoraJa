@@ -71,7 +71,9 @@ export default function DriverScreen() {
       const formattedPrevisaoSaida = new Date(tripDetails.previsaoSaida).toISOString();
       const formattedPrevisaoChegada = new Date(tripDetails.previsaoChegada).toISOString();
 
-      const response = await fetch('http://26.78.193.223:8085/viagem', {
+      console.log(motoristaId, formattedPrevisaoSaida, formattedPrevisaoChegada, tripDetails.quantidadeVagas, tripDetails.veiculoPlaca, tripDetails.origem, tripDetails.destino);
+
+      const response = await fetch('http://localhost:8085/viagem', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -156,7 +158,8 @@ export default function DriverScreen() {
       <Modal visible={modalVisible} animationType="slide">
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Iniciar Nova Viagem</Text>
-          <Button title="Selecionar Horário de Saída" buttonStyle={styles.buttonStyle} onPress={showDatePicker} />
+          <Button title="Selecionar Horário de Saída" buttonStyle={styles.buttonHour} onPress={showDatePicker} />
+          <View style={styles.buttonSpacer} />
           <Input
             placeholder="Quantidade de Vagas"
             keyboardType="numeric"
@@ -255,6 +258,13 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 12,
     width: 180,
+    backgroundColor: '#F3AC3D',
+    marginHorizontal: 5,
+  },
+  buttonHour: {
+    height: 50,
+    borderRadius: 12,
+    width: 240,
     backgroundColor: '#F3AC3D',
     marginHorizontal: 5,
   },
