@@ -1,4 +1,4 @@
-name: DEV - Build
+name: DEV - Build & Deploy
 
 on:
   push:
@@ -35,6 +35,10 @@ jobs:
 
       - name: Set EXPO_TOKEN environment variable
         run: echo "EXPO_TOKEN=${{ secrets.EXPO_TOKEN }}" >> $GITHUB_ENV
+
+      - name: Configure EAS project
+        run: eas build:configure
+        working-directory: frontend
 
       - name: Run build for Android
         run: npm run build:android
