@@ -25,7 +25,7 @@ export default function Profile() {
         const driverId = decoded.preferred_username;
 
         try {
-          const response = await fetch(`http://26.78.193.223:8085/motorista/${driverId}`);
+          const response = await fetch(`http://localhost:8085/motorista/${driverId}`);
           if (!response.ok) {
             throw new Error(`Erro ao buscar dados: ${response.statusText}`);
           }
@@ -61,7 +61,7 @@ export default function Profile() {
   const handleUpdate = async () => {
     const driverId = driverData.id; // Assumindo que o ID do motorista está disponível em driverData.id
     try {
-      const response = await fetch(`http://26.78.193.223:8085/motorista/${driverId}`, {
+      const response = await fetch(`http://localhost:8085/motorista/${driverId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
