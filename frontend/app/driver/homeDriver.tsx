@@ -56,7 +56,7 @@ export default function DriverScreen() {
       });
       const data = await response.json();
       setModalVisible(false);
-      router.push({ pathname: 'driver/TripDetails', params: { tripId: data.id } });
+      router.push({ pathname: 'screens/TripDetails', params: { tripId: data.id } });
     } catch (error) {
       console.error('Erro ao criar viagem:', error);
     }
