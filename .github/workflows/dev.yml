@@ -7,6 +7,27 @@ on:
     branches: ["develop"]
 
 jobs:
+  lint:
+    name: Lint Codebase
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: frontend
+
+      - name: Run lint
+        run: npm run lint
+        working-directory: frontend
+
   build:
     name: Build Android
     runs-on: ubuntu-latest
@@ -46,3 +67,4 @@ jobs:
         with:
           name: android-apk
           path: frontend/build/android/*.apk
+
