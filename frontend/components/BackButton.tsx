@@ -7,7 +7,7 @@ const BackButton = () => {
 
   return (
     <TouchableOpacity style={styles.button} onPress={() => router.back()}>
-      <Text style={styles.buttonText}>Voltar</Text>
+      <Text style={styles.buttonText}>☚ Voltar</Text>
     </TouchableOpacity>
   );
 };
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     left: 10,
-    backgroundColor: '#007bff',
+    backgroundColor: '#F3AC3D',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
