@@ -23,7 +23,6 @@ export default function Profile() {
           const response = await fetch(`http://26.78.193.223:8085/motorista/${driverId}`);
           const data = await response.json();
           setDriverData(data.data);
-          console.log(data);
         } catch (error) {
           console.error('Erro ao buscar dados do motorista:', error);
         }
