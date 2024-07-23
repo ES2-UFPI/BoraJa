@@ -21,7 +21,7 @@ export default function Profile() {
         const driverId = decoded.preferred_username;
 
         try {
-          const response = await fetch(`http://26.78.193.223:8085/motorista/${driverId}`);
+          const response = await fetch(`http://localhost:8085/motorista/${driverId}`);
           const data = await response.json();
           setDriverData(data.data);
         } catch (error) {

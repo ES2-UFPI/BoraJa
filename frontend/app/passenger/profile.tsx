@@ -20,7 +20,7 @@ export default function Profile() {
         const passengerId = decoded.preferred_username;
 
         try {
-          const response = await fetch(`http://26.78.193.223:8085/passageiro/${passengerId}`);
+          const response = await fetch(`http://localhost:8085/passageiro/${passengerId}`);
           const data = await response.json();
           setPassengerData(data.data);
         } catch (error) {
