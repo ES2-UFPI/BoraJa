@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
   buttonHour: {
     height: 50,
     borderRadius: 12,
-    width: 240,
+    width: 280,
     backgroundColor: '#F3AC3D',
     marginHorizontal: 5,
   },

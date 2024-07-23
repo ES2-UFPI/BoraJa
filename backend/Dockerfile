@@ -7,9 +7,6 @@ WORKDIR /app
 # Copie o arquivo pom.xml para o container
 COPY ./pom.xml .
 
-# Copie o arquivo.env para o container para que as variáveis de ambiente estejam disponíveis
-COPY .env ./
-
 # Execute mvn dependency:go-offline para baixar todas as dependências offline
 RUN mvn dependency:go-offline
 
