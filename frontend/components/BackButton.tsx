@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 
 const BackButton = () => {
@@ -7,7 +7,7 @@ const BackButton = () => {
 
   return (
     <TouchableOpacity style={styles.button} onPress={() => router.back()}>
-      <Text style={styles.buttonText}>☚ Voltar</Text>
+      <Text style={styles.buttonText}> Voltar</Text>
     </TouchableOpacity>
   );
 };

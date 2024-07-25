@@ -10,6 +10,7 @@ import {
 } from 'expo-location';
 import { Input } from 'react-native-elements';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import BackButton from '@/components/BackButton';
 const { jwtDecode } = require('jwt-decode');
 
 export default function DriverScreen() {
@@ -134,6 +135,7 @@ export default function DriverScreen() {
 
   return (
     <View style={styles.container}>
+      <BackButton/>
       <View style={styles.mapContainer}>
         <MapView
           style={styles.map}
@@ -230,8 +232,8 @@ export default function DriverScreen() {
               </View>
             </View>
           </View>
-          <Button title="Confirmar Localização" onPress={handleConfirmLocation} buttonStyle={styles.buttonStyle} />
-          <Button title="Cancelar" buttonStyle={styles.buttonStyle} onPress={() => setConfirmLocationVisible(false)} />
+          <Button title="Confirmar Localização" onPress={handleConfirmLocation} buttonStyle={styles.buttonModal} />
+          <Button title="Cancelar" buttonStyle={styles.buttonModal} onPress={() => setConfirmLocationVisible(false)} />
         </View>
       </Modal>
     </View>
@@ -247,10 +249,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     position: 'absolute',
-    bottom: 50,
+    bottom: 30,
     zIndex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     width: '90%',
     paddingHorizontal: 10,
   },
@@ -260,6 +262,14 @@ const styles = StyleSheet.create({
     width: 180,
     backgroundColor: '#F3AC3D',
     marginHorizontal: 5,
+  },
+  buttonModal: {
+    height: 50,
+    borderRadius: 12,
+    width: 180,
+    backgroundColor: '#F3AC3D',
+    marginHorizontal: 5,
+    marginVertical: 5,
   },
   buttonHour: {
     height: 50,
@@ -327,6 +337,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    marginTop: 20,
+    maxHeight: 550,
   },
   modalTitle: {
     fontSize: 24,
