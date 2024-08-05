@@ -4,11 +4,15 @@ import { useRouter } from 'expo-router';
 import { Button, Icon } from 'react-native-elements';
 import { getTokenFromFile } from '../tokenFileStorage';
 const { jwtDecode } = require('jwt-decode');
+import config from '../config';
 
+// Carregar as variáveis de ambiente do arquivo .env
 export default function Profile() {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
   const [passengerData, setPassengerData] = useState<any>(null);
+  const backendUrl = config.BACKEND_URL;
+  const backendPort = config.PORT;
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -20,7 +24,7 @@ export default function Profile() {
         const passengerId = decoded.preferred_username;
 
         try {
-          const response = await fetch(`http://localhost:8085/passageiro/${passengerId}`);
+          const response = await fetch(`http://${backendUrl}:${backendPort}/passageiro/${passengerId}`);
           const data = await response.json();
           setPassengerData(data.data);
         } catch (error) {

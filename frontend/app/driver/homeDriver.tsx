@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Modal } from 'react-native';
 import { Button } from 'react-native-elements';
+import config from '../config';
 import MapView, { Marker, Region } from 'react-native-maps';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import {
@@ -12,6 +13,7 @@ import { Input } from 'react-native-elements';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import BackButton from '@/components/BackButton';
 const { jwtDecode } = require('jwt-decode');
+
 
 export default function DriverScreen() {
   const router = useRouter();
@@ -30,6 +32,8 @@ export default function DriverScreen() {
     destino: { latitude: 0, longitude: 0, nome: '' },
   });
   const { token } = useLocalSearchParams();
+  const backendUrl = config.BACKEND_URL;
+  const backendPort = config.PORT;
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -67,21 +71,19 @@ export default function DriverScreen() {
   const handleCreateTrip = async () => {
     try {
       const decodedToken = jwtDecode(token);
-      const motoristaId = decodedToken.preferred_username;
+      const username = decodedToken.preferred_username;
 
       const formattedPrevisaoSaida = new Date(tripDetails.previsaoSaida).toISOString();
       const formattedPrevisaoChegada = new Date(tripDetails.previsaoChegada).toISOString();
 
-      console.log(motoristaId, formattedPrevisaoSaida, formattedPrevisaoChegada, tripDetails.quantidadeVagas, tripDetails.veiculoPlaca, tripDetails.origem, tripDetails.destino);
-
-      const response = await fetch('http://localhost:8085/viagem', {
+      const response = await fetch(`http://${backendUrl}:${backendPort}/viagem`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          motoristaId,
+          motoristaId: username,
           previsaoSaida: formattedPrevisaoSaida,
           previsaoChegada: formattedPrevisaoChegada,
           quantidadeVagas: tripDetails.quantidadeVagas,
@@ -90,9 +92,20 @@ export default function DriverScreen() {
           destino: tripDetails.destino,
         }),
       });
+      var body = JSON.stringify({
+        motoristaId: username,
+        previsaoSaida: formattedPrevisaoSaida,
+        previsaoChegada: formattedPrevisaoChegada,
+        quantidadeVagas: tripDetails.quantidadeVagas,
+        veiculoPlaca: tripDetails.veiculoPlaca,
+        origem: tripDetails.origem,
+        destino: tripDetails.destino,
+      });
+      console.log(body);
       const data = await response.json();
+      console.log(data.data.id);
       setModalVisible(false);
-      router.push({ pathname: 'screens/TripDetails', params: { tripId: data.id } });
+      router.push({ pathname: 'screens/TripDetails', params: { tripId: data.data.id } });
     } catch (error) {
       console.error('Erro ao criar viagem:', error);
     }
@@ -168,7 +181,7 @@ export default function DriverScreen() {
             onChangeText={(text) => setTripDetails({ ...tripDetails, quantidadeVagas: parseInt(text) })}
           />
           <Input
-            placeholder="Veículo"
+            placeholder="Placa do Veículo"
             onChangeText={(text) => setTripDetails({ ...tripDetails, veiculoPlaca: text })}
           />
           <View style={styles.buttonSpacer} />

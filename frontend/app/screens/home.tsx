@@ -4,7 +4,9 @@ import React from 'react';
 import { useRouter } from 'expo-router';
 import { Image } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
+import config from '../config';
 
+// Carregar as variáveis de ambiente do arquivo .env
 export default function HomeScreen() {
   const router = useRouter();
   const { token } = useLocalSearchParams();

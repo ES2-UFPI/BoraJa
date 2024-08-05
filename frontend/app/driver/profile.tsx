@@ -6,10 +6,16 @@ import { getTokenFromFile } from '../tokenFileStorage';
 const { jwtDecode } = require('jwt-decode');
 import BackButton from '../../components/BackButton';
 
+import config from '../config';
+
+// Carregar as variáveis de ambiente do arquivo .env
+
 export default function Profile() {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
   const [driverData, setDriverData] = useState<any>(null);
+  const backendUrl = config.BACKEND_URL;
+  const backendPort = config.PORT;
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -21,7 +27,7 @@ export default function Profile() {
         const driverId = decoded.preferred_username;
 
         try {
-          const response = await fetch(`http://localhost:8085/motorista/${driverId}`);
+          const response = await fetch(`http://${backendUrl}:${backendPort}/motorista/${driverId}`);
           const data = await response.json();
           setDriverData(data.data);
         } catch (error) {
