@@ -107,4 +107,14 @@ public class ViagemController {
     return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
   }
 
+  @GetMapping("/vagas/{id}")
+  public ResponseEntity<ResponseModel<Vaga>> buscarVagas(@PathVariable UUID id) {
+    if (id == null) {
+      throw new InvalidDataError("id", "Id não pode ser nulo");
+    }
+    ResponseModel<Vaga> resposta = new ResponseModel<>();
+    resposta.setList(viagemService.buscarVagas(id));
+    return ResponseEntity.status(HttpStatus.OK).body(resposta);
+  }
+
 }
