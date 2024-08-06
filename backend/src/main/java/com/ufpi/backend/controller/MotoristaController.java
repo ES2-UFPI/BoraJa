@@ -59,7 +59,7 @@ public class MotoristaController {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resposta);
     }
 
-    if (StringUtils.isUsernameValido(motoristaCreateDTO.getUsername())) {
+    if (!StringUtils.isUsernameValido(motoristaCreateDTO.getUsername())) {
       resposta.setMessage("Username inválido! O username não pode conter espaços em branco.");
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resposta);
     }
