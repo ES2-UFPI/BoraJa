@@ -23,6 +23,9 @@ public class PassageiroCreateDTO implements Serializable {
 
   private String foto;
 
+  @NotBlank(message = "propriedade username não pode ser nula ou string vazia.")
+  private String username;
+
   @NotBlank(message = "propriedade em ail não pode ser nula ou string vazia.")
   private String email;
 
@@ -39,6 +42,7 @@ public class PassageiroCreateDTO implements Serializable {
 
   public static Passageiro toEntity(PassageiroCreateDTO userDTO) {
     return Passageiro.builder()
+        .username(userDTO.getUsername())
         .foto(userDTO.getFoto() == null ? "" : userDTO.getFoto())
         .cpf(userDTO.getCpf())
         .nome(userDTO.getNome())

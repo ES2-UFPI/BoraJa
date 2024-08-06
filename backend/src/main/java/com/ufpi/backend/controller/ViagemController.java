@@ -98,10 +98,10 @@ public class ViagemController {
     if (passageiroInsertDTO == null) {
       throw new InvalidDataError("passageiroId", "Id do passageiro não pode ser nulo");
     }
-    if (viagemService.existsViagemAtivaByPassageiro(passageiroInsertDTO.getId(), id)) {
+    if (viagemService.existsViagemAtivaByPassageiro(passageiroInsertDTO.getUsername(), id)) {
       throw new AppError("Passageiro já possui viagem ativa. Finalize-a antes de ingressar em outra.");
     }
-    Vaga vaga = viagemService.ingressar(id, passageiroInsertDTO.getId());
+    Vaga vaga = viagemService.ingressar(id, passageiroInsertDTO.getUsername());
     ResponseModel<Vaga> resposta = new ResponseModel<>();
     resposta.setData(vaga);
     return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
