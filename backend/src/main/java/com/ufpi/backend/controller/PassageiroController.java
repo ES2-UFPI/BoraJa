@@ -1,6 +1,5 @@
 package com.ufpi.backend.controller;
 
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.springframework.data.domain.Pageable;

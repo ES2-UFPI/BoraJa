@@ -1,6 +1,5 @@
 package com.ufpi.backend.controller;
 
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.springframework.data.domain.Pageable;
@@ -26,6 +25,7 @@ import com.ufpi.backend.model.dto.motorista.MotoristaDTO;
 import com.ufpi.backend.model.dto.motorista.MotoristaUpdateDTO;
 import com.ufpi.backend.model.entity.Motorista;
 import com.ufpi.backend.service.MotoristaService;
+import com.ufpi.backend.utils.StringUtils;
 import com.ufpi.backend.validator.CpfValidator;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -56,6 +56,11 @@ public class MotoristaController {
 
     if (motoristaService.consultarMotoristaPeloCPF(motoristaCreateDTO.getCpf()) != null) {
       resposta.setMessage("Já existe um motorista cadastrado com o cpf informado!");
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resposta);
+    }
+
+    if (StringUtils.isUsernameValido(motoristaCreateDTO.getUsername())) {
+      resposta.setMessage("Username inválido! O username não pode conter espaços em branco.");
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resposta);
     }
 

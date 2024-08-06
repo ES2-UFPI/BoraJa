@@ -3,7 +3,6 @@ package com.ufpi.backend.model.dto.motorista;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import com.ufpi.backend.annotation.ValidCPF;
 import com.ufpi.backend.model.entity.Motorista;

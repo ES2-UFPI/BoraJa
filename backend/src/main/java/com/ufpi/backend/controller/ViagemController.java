@@ -98,13 +98,23 @@ public class ViagemController {
     if (passageiroInsertDTO == null) {
       throw new InvalidDataError("passageiroId", "Id do passageiro não pode ser nulo");
     }
-    if (viagemService.existsViagemAtivaByPassageiro(passageiroInsertDTO.getId(), id)) {
+    if (viagemService.existsViagemAtivaByPassageiro(passageiroInsertDTO.getUsername(), id)) {
       throw new AppError("Passageiro já possui viagem ativa. Finalize-a antes de ingressar em outra.");
     }
-    Vaga vaga = viagemService.ingressar(id, passageiroInsertDTO.getId());
+    Vaga vaga = viagemService.ingressar(id, passageiroInsertDTO.getUsername());
     ResponseModel<Vaga> resposta = new ResponseModel<>();
     resposta.setData(vaga);
     return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
+  }
+
+  @GetMapping("/vagas/{id}")
+  public ResponseEntity<ResponseModel<Vaga>> buscarVagas(@PathVariable UUID id) {
+    if (id == null) {
+      throw new InvalidDataError("id", "Id não pode ser nulo");
+    }
+    ResponseModel<Vaga> resposta = new ResponseModel<>();
+    resposta.setList(viagemService.buscarVagas(id));
+    return ResponseEntity.status(HttpStatus.OK).body(resposta);
   }
 
 }

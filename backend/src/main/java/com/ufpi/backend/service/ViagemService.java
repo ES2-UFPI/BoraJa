@@ -171,6 +171,14 @@ public class ViagemService {
     return viagemRepository.save(viagem);
   }
 
+  public List<Vaga> buscarVagas(UUID id) {
+    List<Vaga> vagas = vagaRepository.findByViagem(id);
+    if (vagas.isEmpty()) {
+      throw new NotFoundError("Vagas não encontradas.");
+    }
+    return vagas;
+  }
+
   public Vaga ingressar(UUID id, String passageiroId) {
     Viagem viagem = findById(id);
     Passageiro passageiro = passageiroRepository.findById(passageiroId).orElse(null);
