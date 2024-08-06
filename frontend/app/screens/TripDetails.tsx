@@ -2,7 +2,9 @@ import { Text, View, StyleSheet, Button } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { useState, useEffect } from 'react';
 import { useLocalSearchParams } from 'expo-router';
+import config from '../config';
 
+// Carregar as variáveis de ambiente do arquivo .env
 // Define TypeScript types for the trip and participant objects
 interface Trip {
   horarioSaida: string;
@@ -22,6 +24,8 @@ export default function TripDetails() {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const { token } = useLocalSearchParams();
   const route = useRoute();
+  const backendUrl = config.BACKEND_URL;
+  const backendPort = config.PORT;
 
   // Type assertion for route.params
   const tripId = (route.params as { tripId: string }).tripId;
@@ -29,10 +33,7 @@ export default function TripDetails() {
   useEffect(() => {
     const fetchTripDetails = async () => {
       try {
-        const response = await fetch(`http://26.78.193.223:8085/viagem/search?id=${tripId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await fetch(`http://${backendUrl}:${backendPort}/viagem/search?id=${tripId}`, {
         });
         if (!response.ok) {
           throw new Error('Failed to fetch trip details');
@@ -46,7 +47,7 @@ export default function TripDetails() {
 
     const fetchParticipants = async () => {
       try {
-        const response = await fetch(`http://26.78.193.223:8085/viagem/${tripId}/participantes`, {
+        const response = await fetch(`http://${backendUrl}:${backendPort}/viagem/${tripId}/participantes`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -73,7 +74,7 @@ export default function TripDetails() {
 
   const handleStartTrip = async () => {
     try {
-      const response = await fetch(`http://26.78.193.223:8085/viagem/iniciar/${tripId}`, {
+      const response = await fetch(`http://${backendUrl}:${backendPort}/viagem/iniciar/${tripId}`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

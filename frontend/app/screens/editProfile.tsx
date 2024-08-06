@@ -5,6 +5,8 @@ import { Button, Icon } from 'react-native-elements';
 import { getTokenFromFile } from '../tokenFileStorage';
 const { jwtDecode } = require('jwt-decode');
 import * as ImagePicker from 'expo-image-picker';
+import BackButton from '../../components/BackButton';
+import config from '../config';
 
 export default function Profile() {
   const router = useRouter();
@@ -13,7 +15,10 @@ export default function Profile() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [foto, setFoto] = useState('');
+  const backendUrl = config.BACKEND_URL;
+  const backendPort = config.PORT;
 
+  // Carregar as variáveis de ambiente do arquivo .env
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await getTokenFromFile();
@@ -24,7 +29,7 @@ export default function Profile() {
         const driverId = decoded.preferred_username;
 
         try {
-          const response = await fetch(`http://26.78.193.223:8085/motorista/${driverId}`);
+          const response = await fetch(`http://${backendUrl}:${backendPort}/motorista/${driverId}`);
           if (!response.ok) {
             throw new Error(`Erro ao buscar dados: ${response.statusText}`);
           }
@@ -60,7 +65,7 @@ export default function Profile() {
   const handleUpdate = async () => {
     const driverId = driverData.id; // Assumindo que o ID do motorista está disponível em driverData.id
     try {
-      const response = await fetch(`http://26.78.193.223:8085/motorista/${driverId}`, {
+      const response = await fetch(`http://${backendUrl}:${backendPort}/motorista/${driverId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -85,6 +90,7 @@ export default function Profile() {
 
   return (
     <View style={styles.container}>
+      <BackButton />
       <Text style={styles.title}>Perfil</Text>
       <View style={styles.buttonSpacer} />
       <TouchableOpacity onPress={pickImage}>

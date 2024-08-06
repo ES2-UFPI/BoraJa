@@ -1,0 +1,40 @@
+name: CI Pipeline
+
+on:
+  release:
+    types: [created]
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    env: 
+      DB_URL: 'jdbc:postgresql://aws-0-us-west-1.pooler.supabase.com:6543/postgres?user=postgres.onbibxmroeriscogwslr&password=oC3csxucjzoN3SXa'
+      SPRING_PROFILES_ACTIVE: 'dev'
+      ENVIRONMENT: 'dev'
+      DB_USERNAME: 'postgres.onbibxmroeriscogwslr'
+      DB_PASSWORD: 'oC3csxucjzoN3SXa'
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        server-id: github
+        settings-path: ${{ github.workspace }}
+
+    - name: Build with Maven
+      run: mvn -B package -DSkipTests --file backend/pom.xml
+
+    - name: Build the Docker image
+      run: docker build ./backend --file backend/Dockerfile --tag boraja-backend:$(date +%s)
