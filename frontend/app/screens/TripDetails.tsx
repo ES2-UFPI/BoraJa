@@ -46,12 +46,10 @@ export default function TripDetails() {
     };
 
     const fetchParticipants = async () => {
+      const url = `http://${backendUrl}:${backendPort}/viagem/${tripId}/vagas`;
+      console.log(url);
       try {
-        const response = await fetch(`http://${backendUrl}:${backendPort}/viagem/${tripId}/participantes`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(`http://${backendUrl}:${backendPort}/viagem/${tripId}/vagas`, {});
         if (!response.ok) {
           throw new Error('Failed to fetch participants');
         }

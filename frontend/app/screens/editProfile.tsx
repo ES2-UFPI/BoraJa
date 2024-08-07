@@ -11,7 +11,7 @@ import config from '../config';
 export default function Profile() {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
-  const [driverData, setDriverData] = useState<any>(null);
+  const [motoristaData, setmotoristaData] = useState<any>(null);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [foto, setFoto] = useState('');
@@ -26,16 +26,16 @@ export default function Profile() {
 
       if (storedToken) {
         const decoded: any = jwtDecode(storedToken);
-        const driverId = decoded.preferred_username;
+        const motoristaId = decoded.preferred_username;
 
         try {
-          const response = await fetch(`http://${backendUrl}:${backendPort}/motorista/${driverId}`);
+          const response = await fetch(`http://${backendUrl}:${backendPort}/motorista/${motoristaId}`);
           if (!response.ok) {
             throw new Error(`Erro ao buscar dados: ${response.statusText}`);
           }
           const data = await response.json();
           const { nome, email, foto, dataNascimento } = data.data;
-          setDriverData(data.data);
+          setmotoristaData(data.data);
           setName(nome);
           setEmail(email);
           setFoto(foto);
@@ -55,17 +55,15 @@ export default function Profile() {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
       setFoto(result.assets[0].uri);
     }
   };
 
   const handleUpdate = async () => {
-    const driverId = driverData.id; // Assumindo que o ID do motorista está disponível em driverData.id
+    const motoristaId = motoristaData.id; // Assumindo que o ID do motorista está disponível em motoristaData.id
     try {
-      const response = await fetch(`http://${backendUrl}:${backendPort}/motorista/${driverId}`, {
+      const response = await fetch(`http://${backendUrl}:${backendPort}/motorista/${motoristaId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -79,7 +77,7 @@ export default function Profile() {
 
       if (response.ok) {
         console.log('Dados do motorista atualizados com sucesso!');
-        // Você pode atualizar o estado driverData aqui se necessário
+        // Você pode atualizar o estado motoristaData aqui se necessário
       } else {
         console.error('Erro ao atualizar dados do motorista:', response.status);
       }
@@ -96,11 +94,11 @@ export default function Profile() {
       <TouchableOpacity onPress={pickImage}>
         <Image
           style={styles.profileImage}
-          source={{ uri: driverData ? driverData.foto : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMggZhOIH1vXmnv0bCyBu8iEuYQO-Dw1kpp7_v2mwhw_SKksetiK0e4VWUak3pm-v-Moc&usqp=CAU' }}
+          source={{ uri: motoristaData ? motoristaData.foto : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMggZhOIH1vXmnv0bCyBu8iEuYQO-Dw1kpp7_v2mwhw_SKksetiK0e4VWUak3pm-v-Moc&usqp=CAU' }}
         />
       </TouchableOpacity>
-      <Text style={styles.name}>Olá, {driverData ? `${driverData.nome}` : 'Carregando...'}</Text>
-      <Text style={styles.stars}>{driverData ? `${driverData.avaliacao}` : 'Carregando...'} <Icon name="star" size={15} color="black"/></Text>
+      <Text style={styles.name}>Olá, {motoristaData ? `${motoristaData.nome}` : 'Carregando...'}</Text>
+      <Text style={styles.stars}>{motoristaData ? `${motoristaData.avaliacao}` : 'Carregando...'} <Icon name="star" size={15} color="black"/></Text>
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Nome:</Text>
         <TextInput

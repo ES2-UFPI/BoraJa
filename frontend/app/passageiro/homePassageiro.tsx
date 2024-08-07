@@ -11,7 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import config from '../config';
 
 // Carregar as variáveis de ambiente do arquivo .env
-export default function PassengerScreen() {
+export default function PassageiroScreen() {
   const [location, setLocation] = useState<LocationObject | null>(null);
   const [region, setRegion] = useState<Region | null>(null);
   const [modalVisible, setModalVisible] = useState(false);

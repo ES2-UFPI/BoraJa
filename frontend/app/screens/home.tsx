@@ -106,15 +106,25 @@ export default function HomeScreen() {
   const handleSubmit = async () => {
     if (!userType) return;
     const url = `http://${backendUrl}:${backendPort}/${userType}`;
+    const currentDate = new Date().toISOString().split('T')[0];
+
     try {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          data_cadastro: currentDate,
+          data_atualizacao: currentDate,
+          avaliacao: 0,
+          corridas_avaliadas: userType === 'motorista' ? 0 : undefined,
+          corridas_totais: userType === 'motorista' ? 0 : undefined,
+        }),
       });
-       //if (response.ok) {
+
+      if (response.ok) {
         if (userType === 'motorista') {
           Animated.timing(fadeAnim, {
             toValue: 0,
@@ -132,14 +142,14 @@ export default function HomeScreen() {
           setModalVisible(false);
           router.push({ pathname: `${userType}/home${userType.charAt(0).toUpperCase() + userType.slice(1)}`, params: { token: token } });
         }
-      //}
+      }
     } catch (error) {
       console.error(error);
     }
   };
 
   const handleVehicleSubmit = async () => {
-    const url = `http://${backendUrl}:${backendPort}/vehicle`;
+    const url = `http://${backendUrl}:${backendPort}/veiculo`;
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -150,7 +160,7 @@ export default function HomeScreen() {
       });
       if (response.ok) {
         setModalVisible(false);
-        router.push({ pathname: `motorista/homeMotorista`, params: { token: token } });
+        router.push({ pathname: 'motorista/homeMotorista', params: { token: token } });
       }
     } catch (error) {
       console.error(error);
@@ -197,17 +207,18 @@ export default function HomeScreen() {
                 </TouchableOpacity>
                 {showDatePicker && (
                   <DateTimePicker
-                  value={new Date(formData.dataNascimento)}
-                  mode="date"
-                  display="default"
-                  onChange={handleDateChange}
+                    value={new Date(formData.dataNascimento)}
+                    mode="date"
+                    display="default"
+                    onChange={handleDateChange}
                   />
                 )}
-                <Button style={styles.buttonStyle1} title="Escolher Foto" onPress={() => handleImagePick(true)}>Escolher Foto</Button>
-                {vehicleData.foto ? <Image source={{ uri: vehicleData.foto }} style={styles.image} /> : null}
-                <View style={styles.buttonSpacer} />
+                <Button title="Escolher Foto" onPress={() => handleImagePick()} />
                 {formData.foto ? <Image source={{ uri: formData.foto }} style={styles.image} /> : null}
+                <View style={styles.buttonSpacer} />
                 <Button title="Cadastrar" onPress={handleSubmit} />
+                <View style={styles.buttonSpacer} />
+                <Button title="Fechar" onPress={() => setModalVisible(false)} />
               </>
             ) : (
               <>
@@ -248,10 +259,12 @@ export default function HomeScreen() {
                   onChangeText={(text) => setVehicleData({ ...vehicleData, cpfProprietario: text })}
                   style={styles.input}
                 />
-                <Button style={styles.buttonStyle1} title="Escolher Foto" onPress={() => handleImagePick(true)}>Escolher Foto</Button>
+                <Button title="Escolher Foto" onPress={() => handleImagePick(true)} />
                 {vehicleData.foto ? <Image source={{ uri: vehicleData.foto }} style={styles.image} /> : null}
                 <View style={styles.buttonSpacer} />
                 <Button title="Cadastrar Veículo" onPress={handleVehicleSubmit} />
+                <View style={styles.buttonSpacer} />
+                <Button title="Fechar" onPress={() => setModalVisible(false)} />
               </>
             )}
           </Animated.View>
@@ -292,9 +305,6 @@ const styles = StyleSheet.create({
   },
   buttonSpacer: {
     height: 10,
-  },
-  buttonSpacer2: {
-    height: 30,
   },
   modalBackground: {
     flex: 1,
