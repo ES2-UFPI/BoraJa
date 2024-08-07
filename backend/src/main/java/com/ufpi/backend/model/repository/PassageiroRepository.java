@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import com.ufpi.backend.model.entity.Motorista;
 import com.ufpi.backend.model.entity.Passageiro;
 import com.ufpi.backend.model.filter.PassageiroFiltroDTO;
 
@@ -33,6 +34,11 @@ public interface PassageiroRepository extends JpaRepository<Passageiro, String>,
     if (isNotBlank(filter.getNome())) {
       spec = spec.and(porNome(filter.getNome()));
     }
+
+    if (isNotBlank(filter.getUsername())) {
+      spec = spec.and(porUsername(filter.getUsername()));
+    }
+
     return spec;
   }
 
@@ -57,6 +63,11 @@ public interface PassageiroRepository extends JpaRepository<Passageiro, String>,
 
   public static Specification<Passageiro> porCpf(String cpf) {
     return (Root<Passageiro> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.equal(root.get("cpf"), cpf);
+  }
+
+  public static Specification<Passageiro> porUsername(String username) {
+    return (Root<Passageiro> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.equal(root.get("username"),
+        username);
   }
 
   public static Specification<Passageiro> porNome(String nome) {

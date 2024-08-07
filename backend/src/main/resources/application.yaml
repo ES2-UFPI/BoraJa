@@ -7,14 +7,14 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   sql:
     init:
-      mode: always
+      mode: never
   config:
     additional-location: classpath:/.env
   jackson:
