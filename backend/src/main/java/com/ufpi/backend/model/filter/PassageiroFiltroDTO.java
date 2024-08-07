@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class PassageiroFiltroDTO {
   String cpf;
   String nome;
+  String username;
   private Integer page;
   private Integer size;
 }

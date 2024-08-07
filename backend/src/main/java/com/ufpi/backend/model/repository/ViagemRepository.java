@@ -40,8 +40,8 @@ public interface ViagemRepository extends JpaRepository<Viagem, UUID>, JpaSpecif
     if (filter.getDestino() != null) {
       spec = spec.and(porDestino(filter.getDestino().getNome()));
     }
-    if (filter.getMotoristaId() != null) {
-      spec = spec.and(porMotorista(filter.getMotoristaId()));
+    if (filter.getMotoristaUsername() != null) {
+      spec = spec.and(porMotorista(filter.getMotoristaUsername()));
     }
     if (filter.getVeiculoPlaca() != null) {
       spec = spec.and(porVeiculo(filter.getVeiculoPlaca()));
@@ -79,9 +79,10 @@ public interface ViagemRepository extends JpaRepository<Viagem, UUID>, JpaSpecif
         "%" + destino + "%");
   }
 
-  public static Specification<Viagem> porMotorista(UUID id) {
-    return (Root<Viagem> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.equal(root.get("motorista").get("id"),
-        id);
+  public static Specification<Viagem> porMotorista(String username) {
+    return (Root<Viagem> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.equal(
+        root.get("motorista").get("username"),
+        username);
   }
 
   public static Specification<Viagem> porVeiculo(String placa) {

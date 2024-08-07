@@ -34,6 +34,10 @@ public interface MotoristaRepository extends JpaRepository<Motorista, String>, J
     if (isNotBlank(filter.getNome())) {
       spec = spec.and(porNome(filter.getNome()));
     }
+
+    if (isNotBlank(filter.getUsername())) {
+      spec = spec.and(porUsername(filter.getUsername()));
+    }
     return spec;
   }
 
@@ -58,6 +62,11 @@ public interface MotoristaRepository extends JpaRepository<Motorista, String>, J
 
   public static Specification<Motorista> porCpf(String cpf) {
     return (Root<Motorista> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.equal(root.get("cpf"), cpf);
+  }
+
+  public static Specification<Motorista> porUsername(String username) {
+    return (Root<Motorista> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.equal(root.get("username"),
+        username);
   }
 
   public static Specification<Motorista> porNome(String nome) {
