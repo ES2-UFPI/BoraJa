@@ -14,7 +14,7 @@ spring:
     password: ${DB_PASSWORD}
   sql:
     init:
-      mode: always
+      mode: never
   config:
     additional-location: classpath:/.env
   jackson:
