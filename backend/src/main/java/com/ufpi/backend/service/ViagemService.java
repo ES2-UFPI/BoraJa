@@ -191,6 +191,7 @@ public class ViagemService {
     }
 
     List<Vaga> vagas = vagaRepository.findByViagem(id);
+
     if (vagas.size() >= viagem.getQuantidadeVagas()) {
       throw new AppError("Veículo lotado.");
     }
