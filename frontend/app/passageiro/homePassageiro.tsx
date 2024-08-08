@@ -1,47 +1,60 @@
+import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Modal, FlatList, Image, TouchableOpacity } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
-import { useState, useEffect } from 'react';
+import { requestForegroundPermissionsAsync, getCurrentPositionAsync, LocationObject } from 'expo-location';
 import { useLocalSearchParams } from 'expo-router';
-import {
-  requestForegroundPermissionsAsync,
-  getCurrentPositionAsync,
-  LocationObject
-} from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
 import config from '../config';
 
-// Carregar as variáveis de ambiente do arquivo .env
-export default function PassageiroScreen() {
+const useLocation = () => {
   const [location, setLocation] = useState<LocationObject | null>(null);
-  const [region, setRegion] = useState<Region | null>(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [trips, setTrips] = useState([]);
-  const { token } = useLocalSearchParams();
-  const navigation = useNavigation();
-  const backendUrl = config.BACKEND_URL;
-  const backendPort = config.PORT;
-
-  async function requestLocationPermissions() {
-    const { granted } = await requestForegroundPermissionsAsync();
-    if (granted) {
-      const currentPosition = await getCurrentPositionAsync();
-      setLocation(currentPosition);
-      setRegion({
-        latitude: currentPosition.coords.latitude,
-        longitude: currentPosition.coords.longitude,
-        latitudeDelta: 0.01, // Ajuste o valor para o nível de zoom desejado
-        longitudeDelta: 0.01, // Ajuste o valor para o nível de zoom desejado
-      });
-    }
-  }
+  const [region, setRegion] = useState<Region | undefined>(undefined);
 
   useEffect(() => {
+    const requestLocationPermissions = async () => {
+      const { granted } = await requestForegroundPermissionsAsync();
+      if (granted) {
+        const currentPosition = await getCurrentPositionAsync();
+        setLocation(currentPosition);
+        setRegion({
+          latitude: currentPosition.coords.latitude,
+          longitude: currentPosition.coords.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        });
+      }
+    };
+
     requestLocationPermissions();
   }, []);
 
+  return { location, region };
+};
+
+const TripItem = ({ item }: { item: any }) => (
+  <View style={styles.tripItem}>
+    <Image source={require('../../assets/images/car.png')} style={styles.carIcon} />
+    <View style={styles.tripDetails}>
+      <Text style={styles.tripTitle}>Motorista: {item.motoristaNome}</Text>
+      <Text style={styles.tripInfo}>Veículo: {item.veiculoPlaca}</Text>
+      <Text style={styles.tripInfo}>Partida: {item.origem.nome}</Text>
+      <Text style={styles.tripInfo}>Chegada: {item.destino.nome}</Text>
+      <Text style={styles.tripInfo}>Horário de Saída: {item.previsaoSaida}</Text>
+      <Text style={styles.tripInfo}>Vagas Disponíveis: {item.quantidadeVagas}</Text>
+    </View>
+  </View>
+);
+
+export default function PassageiroScreen() {
+  const { location, region } = useLocation();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [trips, setTrips] = useState([]);
+  const { token } = useLocalSearchParams();
+  const backendUrl = `${config.BACKEND_URL}:${config.PORT}`;
+
   const handleSearchTrips = async () => {
     try {
-      const response = await fetch(`${backendUrl}:${backendPort}/viagem/search`, {
+      const response = await fetch(`${backendUrl}/viagem/search`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -55,56 +68,54 @@ export default function PassageiroScreen() {
     }
   };
 
-  const renderTripItem = ({ item }: { item: any }) => (
-    <View style={styles.tripItem}>
-      <Image source={require('../../assets/images/car.png')} style={styles.carIcon} />
-      <View style={styles.tripDetails}>
-        <Text style={styles.tripTitle}>Motorista: {item.motoristaNome}</Text>
-        <Text style={styles.tripInfo}>Veículo: {item.veiculoPlaca}</Text>
-        <Text style={styles.tripInfo}>Partida: {item.origem.nome}</Text>
-        <Text style={styles.tripInfo}>Chegada: {item.destino.nome}</Text>
-        <Text style={styles.tripInfo}>Horário de Saída: {item.previsaoSaida}</Text>
-        <Text style={styles.tripInfo}>Vagas Disponíveis: {item.quantidadeVagas}</Text>
-      </View>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
-      <View style={styles.mapContainer}>
-        <MapView style={styles.map} region={region as Region}>
-          {location && (
-            <Marker
-              coordinate={{
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-              }}
-              title="Você está aqui"
-            />
-          )}
-        </MapView>
-      </View>
+      <Map region={region} location={location} />
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.buttonStyle2} onPress={handleSearchTrips}>
+        <TouchableOpacity style={styles.buttonStyle} onPress={handleSearchTrips}>
           <Text style={styles.buttonText}>Buscar Carona</Text>
         </TouchableOpacity>
       </View>
-      <Modal visible={modalVisible} animationType="slide">
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>Viagens Disponíveis</Text>
-          <FlatList
-            data={trips}
-            renderItem={renderTripItem}
-            keyExtractor={(item) => item.id.toString()}
-          />
-          <TouchableOpacity style={styles.buttonStyle2} onPress={() => setModalVisible(false)}>
-            <Text style={styles.buttonText}>Fechar</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
+      <TripsModal
+        visible={modalVisible}
+        trips={trips}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 }
+
+const Map = ({ region, location }: { region: Region | undefined; location: LocationObject | null }) => (
+  <View style={styles.mapContainer}>
+    <MapView style={styles.map} region={region}>
+      {location && (
+        <Marker
+          coordinate={{
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          }}
+          title="Você está aqui"
+        />
+      )}
+    </MapView>
+  </View>
+);
+
+const TripsModal = ({ visible, trips, onClose }: { visible: boolean; trips: any[]; onClose: () => void }) => (
+  <Modal visible={visible} animationType="slide">
+    <View style={styles.modalContainer}>
+      <Text style={styles.modalTitle}>Viagens Disponíveis</Text>
+      <FlatList
+        data={trips}
+        renderItem={({ item }) => <TripItem item={item} />}
+        keyExtractor={(item) => item.id.toString()}
+      />
+      <TouchableOpacity style={styles.buttonStyle} onPress={onClose}>
+        <Text style={styles.buttonText}>Fechar</Text>
+      </TouchableOpacity>
+    </View>
+  </Modal>
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -127,7 +138,7 @@ const styles = StyleSheet.create({
     bottom: 50,
     zIndex: 1,
   },
-  buttonStyle2: {
+  buttonStyle: {
     height: 60,
     borderRadius: 12,
     width: 250,
