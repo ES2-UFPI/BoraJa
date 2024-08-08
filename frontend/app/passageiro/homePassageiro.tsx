@@ -51,10 +51,11 @@ export default function PassageiroScreen() {
   const [trips, setTrips] = useState([]);
   const { token } = useLocalSearchParams();
   const backendUrl = `${config.BACKEND_URL}:${config.PORT}`;
+  const backendPort = config.PORT;
 
   const handleSearchTrips = async () => {
     try {
-      const response = await fetch(`${backendUrl}/viagem/search`, {
+      const response = await fetch(`http://${backendUrl}:${backendPort}/viagem/search`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
