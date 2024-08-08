@@ -39,11 +39,6 @@ public class ViagemServiceTest {
   @InjectMocks
   private ViagemService viagemService;
 
-  @BeforeEach
-  void setUp() {
-    MockitoAnnotations.openMocks(this);
-  }
-
   @Test
   void testInsert() {
     ViagemCreateDTO dto = new ViagemCreateDTO();

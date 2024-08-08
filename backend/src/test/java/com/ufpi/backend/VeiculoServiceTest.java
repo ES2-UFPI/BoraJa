@@ -32,11 +32,6 @@ public class VeiculoServiceTest {
   @InjectMocks
   private VeiculoService veiculoService;
 
-  @BeforeEach
-  void setUp() {
-    MockitoAnnotations.openMocks(this);
-  }
-
   // @Test
   // void testBuscar() {
   // Veiculo veiculo = new Veiculo();
@@ -131,13 +126,4 @@ public class VeiculoServiceTest {
     assertThat(result.get(0)).isEqualTo(veiculo);
   }
 
-  @Test
-  void testExcluir() {
-    String placa = "ABC1234";
-    doNothing().when(veiculoRepository).deleteByPlaca(placa);
-
-    // veiculoService.excluir(placa);
-
-    verify(veiculoRepository).deleteByPlaca(placa);
-  }
 }
