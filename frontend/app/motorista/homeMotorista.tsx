@@ -93,7 +93,7 @@ export default function motoristaScreen() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          motoristaId: username,
+          motoristaUsername: username,
           previsaoSaida: formattedPrevisaoSaida,
           previsaoChegada: formattedPrevisaoChegada,
           quantidadeVagas: tripDetails.quantidadeVagas,
