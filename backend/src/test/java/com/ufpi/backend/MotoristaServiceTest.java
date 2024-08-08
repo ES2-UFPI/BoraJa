@@ -8,7 +8,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -24,7 +23,6 @@ import com.ufpi.backend.exceptions.NotFoundError;
 import com.ufpi.backend.model.dto.motorista.MotoristaCreateDTO;
 import com.ufpi.backend.model.dto.motorista.MotoristaDTO;
 import com.ufpi.backend.model.entity.Motorista;
-import com.ufpi.backend.model.filter.MotoristaFiltroDTO;
 import com.ufpi.backend.model.repository.MotoristaRepository;
 import com.ufpi.backend.service.MotoristaService;
 
@@ -91,20 +89,6 @@ public class MotoristaServiceTest {
     assertEquals(motoristaMock, result);
   }
 
-  // @Test
-  // public void testAvaliar() {
-  // Motorista motoristaMock = new Motorista();
-  // motoristaMock.setCorridasAvaliadas(10);
-  // motoristaMock.setAvaliacao(4.0f);
-
-  // when(motoristaRepository.findById("id")).thenReturn(Optional.of(motoristaMock));
-  // when(motoristaRepository.save(any())).thenReturn(motoristaMock);
-
-  // Motorista result = motoristaService.avaliar("id", 5.0f);
-
-  // assertEquals(4.090909, result.getAvaliacao(), 0.000001);
-  // }
-
   @Test
   public void testConsultarMotoristaPeloCPF() {
     Motorista motoristaMock = new Motorista();
@@ -162,11 +146,4 @@ public class MotoristaServiceTest {
 
     assertEquals(motoristaMock, result);
   }
-
-  // @Test
-  // public void testCalcularMedia() {
-  // Float result = motoristaService.calcularMedia(10, 5.0f, 4.0f);
-
-  // assertEquals(4.090909, result, 0.000001);
-  // }
 }
