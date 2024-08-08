@@ -20,6 +20,9 @@ public class MotoristaCreateDTO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  @NotBlank(message = "propriedade username não pode ser nula ou string vazia.")
+  private String username;
+
   @NotBlank(message = "propriedade foto não pode ser nula ou string vazia.")
   private String foto;
 
@@ -39,6 +42,7 @@ public class MotoristaCreateDTO implements Serializable {
 
   public static Motorista toEntity(MotoristaCreateDTO userDTO) {
     return Motorista.builder()
+        .username(userDTO.getUsername())
         .foto(userDTO.getFoto())
         .cpf(userDTO.getCpf())
         .nome(userDTO.getNome())

@@ -64,7 +64,7 @@ public class ViagemService {
   public Viagem insert(ViagemCreateDTO viagemCreateDTO) {
     Viagem viagemTemp = ViagemCreateDTO.toEntity(viagemCreateDTO);
     Veiculo veiculo = veiculoRepository.findById(viagemCreateDTO.getVeiculoPlaca()).orElse(null);
-    Motorista motorista = motoristaRepository.findById(viagemCreateDTO.getMotoristaId()).orElse(null);
+    Motorista motorista = motoristaRepository.findById(viagemCreateDTO.getMotoristaUsername()).orElse(null);
     viagemTemp.setVeiculo(veiculo);
     viagemTemp.setMotorista(motorista);
     viagemTemp.setDataCadastro(LocalDateTime.now());
@@ -127,7 +127,7 @@ public class ViagemService {
 
   public void verificarViagemCreateDTO(@Valid ViagemCreateDTO viagemCreateDTO) {
     Optional<Veiculo> veiculo = veiculoRepository.findById(viagemCreateDTO.getVeiculoPlaca());
-    if (motoristaRepository.findById(viagemCreateDTO.getMotoristaId()).isEmpty()) {
+    if (motoristaRepository.findById(viagemCreateDTO.getMotoristaUsername()).isEmpty()) {
       throw new AppError("Motorista não encontrado.");
     }
     if (veiculo.isEmpty()) {
@@ -145,7 +145,7 @@ public class ViagemService {
     if (viagemRepository.existsViagemByVeiculo(viagemCreateDTO.getVeiculoPlaca())) {
       throw new AppError("Veículo já possui viagem ativa.");
     }
-    if (viagemRepository.existsViagemByMotorista(viagemCreateDTO.getMotoristaId())) {
+    if (viagemRepository.existsViagemByMotorista(viagemCreateDTO.getMotoristaUsername())) {
       throw new AppError("Motorista já possui viagem ativa.");
     }
   }
@@ -171,6 +171,14 @@ public class ViagemService {
     return viagemRepository.save(viagem);
   }
 
+  public List<Vaga> buscarVagas(UUID id) {
+    List<Vaga> vagas = vagaRepository.findByViagem(id);
+    if (vagas.isEmpty()) {
+      throw new NotFoundError("Vagas não encontradas.");
+    }
+    return vagas;
+  }
+
   public Vaga ingressar(UUID id, String passageiroId) {
     Viagem viagem = findById(id);
     Passageiro passageiro = passageiroRepository.findById(passageiroId).orElse(null);
@@ -183,6 +191,7 @@ public class ViagemService {
     }
 
     List<Vaga> vagas = vagaRepository.findByViagem(id);
+
     if (vagas.size() >= viagem.getQuantidadeVagas()) {
       throw new AppError("Veículo lotado.");
     }

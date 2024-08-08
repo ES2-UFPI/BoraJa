@@ -16,7 +16,7 @@ export default function TabLayout() {
         headerShown: false,
       }}>
       <Tabs.Screen
-        name="homeDriver"
+        name="homeMotorista"
         initialParams={{ access_token: token }}
         options={{
           title: '',

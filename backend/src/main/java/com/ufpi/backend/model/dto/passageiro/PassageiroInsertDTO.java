@@ -1,7 +1,6 @@
 package com.ufpi.backend.model.dto.passageiro;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +15,6 @@ public class PassageiroInsertDTO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private String id;
+  private String username;
 
 }

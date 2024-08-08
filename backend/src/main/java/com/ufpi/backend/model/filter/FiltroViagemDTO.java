@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FiltroViagemDTO {
   private UUID id;
-  private UUID motoristaId;
+  private String motoristaUsername;
   private String veiculoPlaca;
   private LocalidadeDTO origem;
   private LocalidadeDTO destino;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Modal } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, Input } from 'react-native-elements';
+import config from '../config';
 import MapView, { Marker, Region } from 'react-native-maps';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import {
@@ -8,11 +9,14 @@ import {
   getCurrentPositionAsync,
   LocationObject
 } from 'expo-location';
-import { Input } from 'react-native-elements';
+import Geocoder from 'react-native-geocoding';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import BackButton from '@/components/BackButton';
 const { jwtDecode } = require('jwt-decode');
 
-export default function DriverScreen() {
+Geocoder.init("AIzaSyD2015jWuZSr28R9O48DbSqb0wgxcLczUE");
+
+export default function motoristaScreen() {
   const router = useRouter();
   const [location, setLocation] = useState<LocationObject | null>(null);
   const [region, setRegion] = useState<Region | null>(null);
@@ -29,6 +33,8 @@ export default function DriverScreen() {
     destino: { latitude: 0, longitude: 0, nome: '' },
   });
   const { token } = useLocalSearchParams();
+  const backendUrl = config.BACKEND_URL;
+  const backendPort = config.PORT;
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -49,6 +55,15 @@ export default function DriverScreen() {
         latitudeDelta: 0.01, // Adjusted for desired zoom level
         longitudeDelta: 0.01, // Adjusted for desired zoom level
       });
+      // Atualizando os detalhes da viagem com a origem
+      setTripDetails((prevDetails) => ({
+        ...prevDetails,
+        origem: {
+          latitude: currentPosition.coords.latitude,
+          longitude: currentPosition.coords.longitude,
+          nome: 'Sua Localização', // Defina um nome fixo ou use Geocoder para obter um nome
+        },
+      }));
     }
   }
 
@@ -66,21 +81,19 @@ export default function DriverScreen() {
   const handleCreateTrip = async () => {
     try {
       const decodedToken = jwtDecode(token);
-      const motoristaId = decodedToken.preferred_username;
+      const username = decodedToken.preferred_username;
 
       const formattedPrevisaoSaida = new Date(tripDetails.previsaoSaida).toISOString();
       const formattedPrevisaoChegada = new Date(tripDetails.previsaoChegada).toISOString();
 
-      console.log(motoristaId, formattedPrevisaoSaida, formattedPrevisaoChegada, tripDetails.quantidadeVagas, tripDetails.veiculoPlaca, tripDetails.origem, tripDetails.destino);
-
-      const response = await fetch('http://localhost:8085/viagem', {
+      const response = await fetch(`http://${backendUrl}:${backendPort}/viagem`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          motoristaId,
+          motoristaUsername: username,
           previsaoSaida: formattedPrevisaoSaida,
           previsaoChegada: formattedPrevisaoChegada,
           quantidadeVagas: tripDetails.quantidadeVagas,
@@ -91,7 +104,7 @@ export default function DriverScreen() {
       });
       const data = await response.json();
       setModalVisible(false);
-      router.push({ pathname: 'screens/TripDetails', params: { tripId: data.id } });
+      router.push({ pathname: 'screens/TripDetails', params: { tripId: data.data.id } });
     } catch (error) {
       console.error('Erro ao criar viagem:', error);
     }
@@ -111,13 +124,32 @@ export default function DriverScreen() {
     hideDatePicker();
   };
 
-  const handleConfirmLocation = () => {
+  const handleConfirmLocation = async () => {
     if (region) {
+      const response = await Geocoder.from(region.latitude, region.longitude);
+      const address = response.results[0].formatted_address;
+
       setTripDetails({
         ...tripDetails,
-        destino: { latitude: region.latitude, longitude: region.longitude, nome: "" },
+        destino: { latitude: region.latitude, longitude: region.longitude, nome: address },
       });
       setConfirmLocationVisible(false);
+    }
+  };
+
+  const handleAddressSubmit = async (address: string) => {
+    try {
+      const response = await Geocoder.from(address);
+      const { lat, lng } = response.results[0].geometry.location;
+      setRegion({
+        latitude: lat,
+        longitude: lng,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      });
+      setTripDetails({ ...tripDetails, destino: { ...tripDetails.destino, nome: address, latitude: lat, longitude: lng } });
+    } catch (error) {
+      console.error("Erro ao buscar o endereço:", error);
     }
   };
 
@@ -134,12 +166,13 @@ export default function DriverScreen() {
 
   return (
     <View style={styles.container}>
+      <BackButton />
       <View style={styles.mapContainer}>
         <MapView
           style={styles.map}
           region={region || undefined}
-          scrollEnabled={false}
-          zoomEnabled={false}
+          scrollEnabled={true}
+          zoomEnabled={true}
           rotateEnabled={false}
           pitchEnabled={false}
         />
@@ -166,26 +199,19 @@ export default function DriverScreen() {
             onChangeText={(text) => setTripDetails({ ...tripDetails, quantidadeVagas: parseInt(text) })}
           />
           <Input
-            placeholder="Veículo"
+            placeholder="Placa do Veículo"
             onChangeText={(text) => setTripDetails({ ...tripDetails, veiculoPlaca: text })}
           />
           <View style={styles.buttonSpacer} />
           <View style={styles.rowContainer}>
             <Input
-              placeholder="Latitude"
-              keyboardType="numeric"
-              value={tripDetails.destino.latitude.toString()}
-              editable={false}
+              placeholder="Endereço do Destino"
+              value={tripDetails.destino.nome}
+              onChangeText={(text) => setTripDetails({ ...tripDetails, destino: { ...tripDetails.destino, nome: text } })}
+              onSubmitEditing={({ nativeEvent }) => handleAddressSubmit(nativeEvent.text)}
               containerStyle={styles.halfInput}
             />
-            <Input
-              placeholder="Longitude"
-              keyboardType="numeric"
-              value={tripDetails.destino.longitude.toString()}
-              editable={false}
-              containerStyle={styles.halfInput}
-            />
-          <Button
+            <Button
               title="⌖"
               onPress={() => setConfirmLocationVisible(true)}
               buttonStyle={styles.halfButton}
@@ -201,8 +227,8 @@ export default function DriverScreen() {
               setRegion({
                 latitude: location?.coords.latitude ?? 0,
                 longitude: location?.coords.longitude ?? 0,
-                latitudeDelta: 0.01, // Ajusted as necessary
-                longitudeDelta: 0.01, // Ajusted as necessary
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
               });
               setModalVisible(false);
             }}
@@ -230,8 +256,8 @@ export default function DriverScreen() {
               </View>
             </View>
           </View>
-          <Button title="Confirmar Localização" onPress={handleConfirmLocation} buttonStyle={styles.buttonStyle} />
-          <Button title="Cancelar" buttonStyle={styles.buttonStyle} onPress={() => setConfirmLocationVisible(false)} />
+          <Button title="Confirmar Localização" onPress={handleConfirmLocation} buttonStyle={styles.buttonModal} />
+          <Button title="Cancelar" buttonStyle={styles.buttonModal} onPress={() => setConfirmLocationVisible(false)} />
         </View>
       </Modal>
     </View>
@@ -247,10 +273,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     position: 'absolute',
-    bottom: 50,
+    bottom: 30,
     zIndex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     width: '90%',
     paddingHorizontal: 10,
   },
@@ -260,6 +286,14 @@ const styles = StyleSheet.create({
     width: 180,
     backgroundColor: '#F3AC3D',
     marginHorizontal: 5,
+  },
+  buttonModal: {
+    height: 50,
+    borderRadius: 12,
+    width: 180,
+    backgroundColor: '#F3AC3D',
+    marginHorizontal: 5,
+    marginVertical: 5,
   },
   buttonHour: {
     height: 50,
@@ -327,6 +361,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    marginTop: 20,
+    maxHeight: 550,
   },
   modalTitle: {
     fontSize: 24,
@@ -342,7 +378,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   halfInput: {
-    width: '40%',
+    width: '80%',
   },
   halfButton: {
     height: 50,

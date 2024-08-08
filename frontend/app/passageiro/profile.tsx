@@ -4,12 +4,15 @@ import { useRouter } from 'expo-router';
 import { Button, Icon } from 'react-native-elements';
 import { getTokenFromFile } from '../tokenFileStorage';
 const { jwtDecode } = require('jwt-decode');
-import BackButton from '../../components/BackButton';
+import config from '../config';
 
+// Carregar as variáveis de ambiente do arquivo .env
 export default function Profile() {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
-  const [driverData, setDriverData] = useState<any>(null);
+  const [passageiroData, setPassageiroData] = useState<any>(null);
+  const backendUrl = config.BACKEND_URL;
+  const backendPort = config.PORT;
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -18,12 +21,12 @@ export default function Profile() {
 
       if (storedToken) {
         const decoded: any = jwtDecode(storedToken);
-        const driverId = decoded.preferred_username;
+        const passageiroId = decoded.preferred_username;
 
         try {
-          const response = await fetch(`http://localhost:8085/motorista/${driverId}`);
+          const response = await fetch(`http://${backendUrl}:${backendPort}/passageiro/${passageiroId}`);
           const data = await response.json();
-          setDriverData(data.data);
+          setPassageiroData(data.data);
         } catch (error) {
           console.error('Erro ao buscar dados do motorista:', error);
         }
@@ -34,19 +37,18 @@ export default function Profile() {
 
   return (
     <View style={styles.container}>
-      <BackButton/>
       <Text style={styles.title}>Perfil</Text>
       <View style={styles.buttonSpacer} />
       <Image
         style={styles.profileImage}
-        source={{ uri: driverData ? driverData.foto : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMggZhOIH1vXmnv0bCyBu8iEuYQO-Dw1kpp7_v2mwhw_SKksetiK0e4VWUak3pm-v-Moc&usqp=CAU' }}
+        source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMggZhOIH1vXmnv0bCyBu8iEuYQO-Dw1kpp7_v2mwhw_SKksetiK0e4VWUak3pm-v-Moc&usqp=CAU' }}
       />
-      <Text style={styles.name}>Olá, {driverData ? `${driverData.nome}` : 'Carregando...'}</Text>
-      <Text style={styles.stars}>{driverData ? `${driverData.avaliacao}` : 'Carregando...'}<Icon name="star" size={15} color="black"/></Text>
+      <Text style={styles.name}>Olá, {passageiroData ? `${passageiroData.nome}` : 'Carregando...'}</Text>
+      <Text style={styles.stars}>{passageiroData ? `${passageiroData.avaliacao}` : 'Carregando...'}<Icon name="star" size={15} color="black"/></Text>
       <View style={styles.buttonContainer}>
         <Button title="Editar Perfil" onPress={() => router.push('screens/editProfile')} buttonStyle={styles.buttonStyle2} />
         <View style={styles.buttonSpacer} /> 
-        <Button title="Ajuda" onPress={() => console.log(driverData)} buttonStyle={styles.buttonStyle2}/>
+        <Button title="Ajuda" onPress={() => console.log(token)} buttonStyle={styles.buttonStyle2}/>
       </View>
     </View>
   );

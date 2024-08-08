@@ -4,8 +4,6 @@ import static com.ufpi.backend.model.repository.PassageiroRepository.especificar
 import static com.ufpi.backend.model.repository.PassageiroRepository.paginar;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

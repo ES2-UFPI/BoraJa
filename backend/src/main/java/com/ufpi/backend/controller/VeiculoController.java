@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ufpi.backend.config.response.ResponseModel;
+import com.ufpi.backend.exceptions.AppError;
 import com.ufpi.backend.exceptions.InvalidDataError;
 import com.ufpi.backend.model.dto.veiculo.VeiculoCreateDTO;
 import com.ufpi.backend.model.dto.veiculo.VeiculoDTO;
@@ -53,7 +54,7 @@ public class VeiculoController {
     Motorista motorista = motoristaService.findByCpf(veiculoCreateDTO.getCpfProprietario());
 
     if (motorista == null) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+      throw new AppError("Motorista não encontrado!");
     }
     var veiculo = veiculoService.insert(veiculoCreateDTO, motorista);
     ResponseModel<VeiculoDTO> resposta = new ResponseModel<>();

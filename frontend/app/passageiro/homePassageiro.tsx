@@ -8,14 +8,18 @@ import {
   LocationObject
 } from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
+import config from '../config';
 
-export default function PassengerScreen() {
+// Carregar as variáveis de ambiente do arquivo .env
+export default function PassageiroScreen() {
   const [location, setLocation] = useState<LocationObject | null>(null);
   const [region, setRegion] = useState<Region | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [trips, setTrips] = useState([]);
   const { token } = useLocalSearchParams();
   const navigation = useNavigation();
+  const backendUrl = config.BACKEND_URL;
+  const backendPort = config.PORT;
 
   async function requestLocationPermissions() {
     const { granted } = await requestForegroundPermissionsAsync();
@@ -37,7 +41,7 @@ export default function PassengerScreen() {
 
   const handleSearchTrips = async () => {
     try {
-      const response = await fetch(`{{url}}/viagem/search`, {
+      const response = await fetch(`${backendUrl}:${backendPort}/viagem/search`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,

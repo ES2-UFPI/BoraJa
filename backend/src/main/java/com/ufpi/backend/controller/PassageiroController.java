@@ -1,6 +1,5 @@
 package com.ufpi.backend.controller;
 
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.springframework.data.domain.Pageable;
@@ -25,6 +24,7 @@ import com.ufpi.backend.model.dto.passageiro.PassageiroDTO;
 import com.ufpi.backend.model.dto.passageiro.PassageiroUpdateDTO;
 import com.ufpi.backend.model.entity.Passageiro;
 import com.ufpi.backend.service.PassageiroService;
+import com.ufpi.backend.utils.StringUtils;
 import com.ufpi.backend.validator.CpfValidator;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -50,6 +50,10 @@ public class PassageiroController {
     }
     if (!Pattern.compile(emailRegex).matcher(passageiroCreateDTO.getEmail()).find()) {
       throw new InvalidDataError("email", "Email inválido!");
+    }
+    if (!StringUtils.isUsernameValido(passageiroCreateDTO.getUsername())) {
+      resposta.setMessage("Username inválido! O username não pode conter espaços em branco.");
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resposta);
     }
     if (passageiroService.consultarPassageiroPeloCPF(passageiroCreateDTO.getCpf()) != null) {
       resposta.setMessage("Já existe um passageiro cadastrado com o cpf informado!");
