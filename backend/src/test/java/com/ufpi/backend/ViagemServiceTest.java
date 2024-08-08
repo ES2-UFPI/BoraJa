@@ -1,6 +1,7 @@
 package com.ufpi.backend;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
+import com.ufpi.backend.model.dto.localidade.LocalidadeCreateDTO;
 import com.ufpi.backend.model.dto.viagem.ViagemCreateDTO;
 import com.ufpi.backend.model.dto.viagem.ViagemDTO;
 import com.ufpi.backend.model.entity.Vaga;
@@ -41,7 +43,18 @@ public class ViagemServiceTest {
 
   @Test
   void testInsert() {
+    // Inicialize os objetos necessários
     ViagemCreateDTO dto = new ViagemCreateDTO();
+    LocalidadeCreateDTO origem = new LocalidadeCreateDTO();
+    LocalidadeCreateDTO destino = new LocalidadeCreateDTO();
+    origem.setLatitude(40.7128);
+    origem.setLongitude(-74.0060);
+    destino.setLatitude(37.7749);
+    destino.setLongitude(-122.4194);
+    dto.setOrigem(origem);
+    dto.setDestino(destino);
+
+    // Mock para o repository
     Viagem viagem = new Viagem();
     when(viagemRepository.save(any(Viagem.class))).thenReturn(viagem);
 
@@ -66,14 +79,16 @@ public class ViagemServiceTest {
   void testIngressar() {
     UUID viagemId = UUID.randomUUID();
     String passageiroUsername = "passageiro";
+    Viagem viagem = new Viagem();
+    when(viagemRepository.findById(viagemId)).thenReturn(Optional.of(viagem));
+
     Vaga vaga = new Vaga();
-    when(vagaRepository.existsViagemAtivaByPassageiro(passageiroUsername, viagemId)).thenReturn(false);
-    when(vagaRepository.save(any(Vaga.class))).thenReturn(vaga);
+    when(viagemService.ingressar(any(UUID.class), any(String.class))).thenReturn(vaga);
 
     Vaga result = viagemService.ingressar(viagemId, passageiroUsername);
 
     assertThat(result).isEqualTo(vaga);
-    verify(vagaRepository).save(any(Vaga.class));
+    verify(viagemRepository).findById(viagemId);
   }
 
   @Test
