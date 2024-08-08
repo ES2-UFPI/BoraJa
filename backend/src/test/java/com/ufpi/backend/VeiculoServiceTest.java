@@ -113,17 +113,4 @@ public class VeiculoServiceTest {
 
     assertThat(thrown.getMessage()).contains(placa);
   }
-
-  // @Test
-  // void testFindByProprietarioCpf() {
-  // String cpf = "12345678901";
-  // Veiculo veiculo = new Veiculo();
-  // when(veiculoRepository.findByProprietarioCpf(cpf)).thenReturn(List.of(veiculo));
-
-  // List<Veiculo> result = veiculoService.findByProprietarioCpf(cpf);
-
-  // assertThat(result).hasSize(1);
-  // assertThat(result.get(0)).isEqualTo(veiculo);
-  // }
-
 }
